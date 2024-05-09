@@ -9,10 +9,10 @@
       "require": "./lib/index.cjs",
       "default": "./lib/index.mjs"
     },
-    "./test": {
-      "types": "./lib/test/index.d.ts",
-      "require": "./lib/test/index.cjs",
-      "default": "./lib/test/index.mjs"
+    "./input": {
+      "types": "./lib/input/index.d.ts",
+      "require": "./lib/input/index.cjs",
+      "default": "./lib/input/index.mjs"
     }
   },
   "types": "./lib/index.d.ts",
@@ -20,9 +20,9 @@
     "lib/index.d.ts",
     "lib/index.cjs",
     "lib/index.mjs",
-    "lib/test/index.d.ts",
-    "lib/test/index.cjs",
-    "lib/test/index.mjs",
+    "lib/input/index.d.ts",
+    "lib/input/index.cjs",
+    "lib/input/index.mjs",
     "README.md",
     "LICENSE"
   ],
@@ -71,5 +71,12 @@
     "extends": [
       "plugin:storybook/recommended"
     ]
+  },
+  "dependencies": {
+    "debounce": "^2.0.0",
+    "react-hook-form": "^7.51.4",
+    "react-icons": "^5.2.1",
+    "react-select": "^5.8.0",
+    "react-toastify": "^10.0.5"
   }
 }

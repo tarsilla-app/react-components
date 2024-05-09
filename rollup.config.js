@@ -45,4 +45,11 @@ function generateBuild(folder) {
   ];
 }
 
-export default [...generateBuild(), ...generateBuild('test'), ...generateBuild('test2')];
+export default [
+  ...generateBuild(),
+  ...generateBuild('input'),
+  ...generateBuild('loading'),
+  ...generateBuild('select'),
+  ...generateBuild('textarea'),
+  ...generateBuild('toast'),
+];
