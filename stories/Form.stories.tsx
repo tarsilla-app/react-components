@@ -57,7 +57,7 @@ export const Rows: StoryFn<typeof meta> = (args) => {
               id: 'row2field1',
               type: 'textarea',
               fieldProps: {
-                width: '100vw',
+                width: '200px',
               },
             },
           ],
@@ -96,14 +96,21 @@ export const Rows: StoryFn<typeof meta> = (args) => {
     },
   });
 
+  //console.log('dirty', form.methods.formState.isDirty, form.methods.formState.dirtyFields);
+
   function onSubmit() {
     const data = form.methods.getValues();
     console.log(data);
   }
 
+  function onCancel() {
+    form.methods.reset();
+  }
+
   return (
     <div>
       <Form {...args} form={form} />
+      <button onClick={onCancel}>Cancel</button>
       <button onClick={onSubmit}>Submit</button>
     </div>
   );
