@@ -1,15 +1,14 @@
+'use client';
+
 import { forwardRef, useState } from 'react';
 
 import debounce from 'debounce';
 import { FaAngleDown, FaAngleUp, FaXmark } from 'react-icons/fa6';
-import ReactSelect, {
-  ClearIndicatorProps,
-  components,
-  DropdownIndicatorProps,
-  MenuPlacement,
-  SelectInstance,
-  Props as SelectProps,
-} from 'react-select';
+import ReactSelect, { ClearIndicatorProps, components, DropdownIndicatorProps, MenuPlacement, SelectInstance } from 'react-select';
+
+//TODO
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Handler = (...event: any[]) => void;
 
 export type SingleOption = {
   label: string;
@@ -52,15 +51,15 @@ type Props = {
 
   options?: Option[];
 
-  onChange: Exclude<SelectProps['onChange'], undefined>;
-  value?: Option | Option[];
+  onChange: Handler;
+  value?: Option | Option[]; //TODO string | string[]
 
   isMulti?: boolean;
   controlShouldRenderValue?: boolean;
   hideSelectedOptions?: boolean;
   closeMenuOnSelect?: boolean;
-  menuIsOpen?: boolean;
   menuPlacement?: MenuPlacement;
+  menuIsOpen?: boolean;
   debounceWait?: number;
 };
 
@@ -69,14 +68,14 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
     {
       type = 'rounded',
       color = 'black',
-      selectedColor,
-      backgroundColor = 'inherit',
+      selectedColor = 'black',
+      backgroundColor = 'white',
       width = 'inherit',
-      menuPlacement = 'bottom',
+      menuPlacement = 'auto',
       debounceWait,
       onChange,
       ...rest
-    }: Props,
+    },
     ref,
   ) => {
     const [menuPlacementInternal, setMenuPlacementInternal] = useState(menuPlacement === 'auto' ? 'bottom' : menuPlacement);
@@ -121,7 +120,7 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
           placeholder: (styles) => ({ ...styles, color: color, fontSize: '16px', fontWeight: '700', margin: 0 }),
           singleValue: (styles) => ({ ...styles, color: color, fontSize: '16px', fontWeight: '700', margin: 0 }),
           menu: (styles, { placement }) => {
-            setMenuPlacementInternal(placement);
+            setTimeout(() => setMenuPlacementInternal(placement), 0);
             return {
               ...styles,
               backgroundColor: backgroundColor,

@@ -33,7 +33,11 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
     return (
       <textarea
         className={styles[`textarea-${type}`]}
-        style={{ '--color': color, '--background-color': backgroundColor, '--width': width }}
+        style={{
+          '--color': color,
+          '--background-color': backgroundColor,
+          '--width': width,
+        }}
         onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
         ref={ref}
         {...rest}
