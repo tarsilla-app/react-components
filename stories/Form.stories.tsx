@@ -1,11 +1,35 @@
 import { useArgs } from '@storybook/preview-api';
-import type { Meta, StoryFn } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { Form, useForm } from '../src/form';
+import { Contract } from '../src/form/types';
+
+function FormStory({ contract }: { contract: Contract }): JSX.Element {
+  const form = useForm({ contract });
+
+  //console.log('dirty', form.methods.formState.isDirty, form.methods.formState.dirtyFields);
+
+  function onSubmit() {
+    const data = form.methods.getValues();
+    console.log(data);
+  }
+
+  function onCancel() {
+    form.methods.reset();
+  }
+
+  return (
+    <div>
+      <Form form={form} />
+      <button onClick={onCancel}>Cancel</button>
+      <button onClick={onSubmit}>Submit</button>
+    </div>
+  );
+}
 
 const meta = {
   title: 'Form',
-  component: Form,
+  component: FormStory,
   parameters: {
     layout: 'centered',
   },
@@ -21,12 +45,13 @@ const meta = {
       return <Story args={{ ...ctx.args }} />;
     },
   ],
-} satisfies Meta<typeof Form>;
+} satisfies Meta<typeof FormStory>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Rows: StoryFn<typeof meta> = (args) => {
-  const form = useForm({
+export const Rows: Story = {
+  args: {
     contract: {
       rows: [
         {
@@ -91,33 +116,11 @@ export const Rows: StoryFn<typeof meta> = (args) => {
         },
       ],
     },
-    values: {
-      row2field1: 'row2field1 value',
-    },
-  });
-
-  //console.log('dirty', form.methods.formState.isDirty, form.methods.formState.dirtyFields);
-
-  function onSubmit() {
-    const data = form.methods.getValues();
-    console.log(data);
-  }
-
-  function onCancel() {
-    form.methods.reset();
-  }
-
-  return (
-    <div>
-      <Form {...args} form={form} />
-      <button onClick={onCancel}>Cancel</button>
-      <button onClick={onSubmit}>Submit</button>
-    </div>
-  );
+  },
 };
 
-export const Columns: StoryFn<typeof meta> = (args) => {
-  const form = useForm({
+export const Columns: Story = {
+  args: {
     contract: {
       columns: [
         {
@@ -165,13 +168,11 @@ export const Columns: StoryFn<typeof meta> = (args) => {
         },
       ],
     },
-  });
-
-  return <Form {...args} form={form} />;
+  },
 };
 
-export const Tabs: StoryFn<typeof meta> = (args) => {
-  const form = useForm({
+export const Tabs: Story = {
+  args: {
     contract: {
       tabs: [
         {
@@ -290,7 +291,5 @@ export const Tabs: StoryFn<typeof meta> = (args) => {
         },
       ],
     },
-  });
-
-  return <Form {...args} form={form} />;
+  },
 };
