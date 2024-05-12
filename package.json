@@ -1,19 +1,47 @@
 {
   "name": "@tarsilla/react-components",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "engines": {
     "node": ">=20.12.2"
   },
+  "main": "./lib/index.mjs",
   "exports": {
     ".": {
+      "types": "./lib/index.d.ts",
       "require": "./lib/index.cjs",
       "default": "./lib/index.mjs"
     },
-    "./input": {
-      "types": "./lib/input/index.d.ts",
-      "require": "./lib/input/index.cjs",
-      "default": "./lib/input/index.mjs"
-    }
+    "./loading": {
+      "types": "./lib/loading/index.d.ts",
+      "require": "./lib/loading/index.cjs",
+      "default": "./lib/loading/index.mjs"
+    },
+    "./select": {
+      "types": "./lib/select/index.d.ts",
+      "require": "./lib/select/index.cjs",
+      "default": "./lib/select/index.mjs"
+    },
+    "./tab": {
+      "types": "./lib/tab/index.d.ts",
+      "require": "./lib/tab/index.cjs",
+      "default": "./lib/tab/index.mjs"
+    },
+    "./text": {
+      "types": "./lib/text/index.d.ts",
+      "require": "./lib/text/index.cjs",
+      "default": "./lib/text/index.mjs"
+    },
+    "./textarea": {
+      "types": "./lib/textarea/index.d.ts",
+      "require": "./lib/textarea/index.cjs",
+      "default": "./lib/textarea/index.mjs"
+    },
+    "./toast": {
+      "types": "./lib/toast/index.d.ts",
+      "require": "./lib/toast/index.cjs",
+      "default": "./lib/toast/index.mjs"
+    },
+    "./package.json": "./package.json"
   },
   "types": "./lib/index.d.ts",
   "files": [
@@ -49,7 +77,7 @@
     "@storybook/react": "^8.0.10",
     "@storybook/react-webpack5": "^8.0.10",
     "@storybook/test": "^8.0.10",
-    "@tarsilla/eslint-config": "^0.0.30",
+    "@tarsilla/eslint-config": "^0.0.31",
     "@types/eslint__js": "^8.42.3",
     "@types/react": "^18.3.1",
     "eslint": "^8.57.0",

@@ -47,10 +47,10 @@ function generateBuild(folder) {
 
 export default [
   ...generateBuild(),
-  ...generateBuild('input'),
   ...generateBuild('loading'),
   ...generateBuild('select'),
   ...generateBuild('tab'),
+  ...generateBuild('text'),
   ...generateBuild('textarea'),
   ...generateBuild('toast'),
 ];

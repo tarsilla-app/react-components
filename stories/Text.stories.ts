@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { Input } from '../src/input';
+import { Text } from '../src/text';
 
 const meta = {
-  title: 'Input',
-  component: Input,
+  title: 'Text',
+  component: Text,
   parameters: {
     layout: 'centered',
   },
@@ -15,7 +15,7 @@ const meta = {
     onChange: fn(),
     onBlur: fn(),
   },
-} satisfies Meta<typeof Input>;
+} satisfies Meta<typeof Text>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

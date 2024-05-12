@@ -1,4 +1,4 @@
-.input-line {
+.text-line {
   color: var(--color);
   background-color: var(--background-color);
   border: 0;
@@ -12,7 +12,7 @@
   height: 24px;
 }
 
-.input-rounded {
+.text-rounded {
   color: var(--color);
   background-color: var(--background-color);
   border: 1px solid var(--color);
@@ -28,12 +28,12 @@
   padding-right: 8px;
 }
 
-.input-line::placeholder,
-.input-rounded::placeholder {
+.text-line::placeholder,
+.text-rounded::placeholder {
   color: var(--color);
 }
 
-.input-line:focus,
-.input-rounded:focus {
+.text-line:focus,
+.text-rounded:focus {
   outline: none;
 }

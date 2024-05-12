@@ -2,7 +2,7 @@ import { ChangeEventHandler, FocusEventHandler, forwardRef } from 'react';
 
 import debounce from 'debounce';
 
-import styles from './Input.module.css';
+import styles from './Text.module.css';
 
 type Props = {
   type?: 'line' | 'rounded';
@@ -26,7 +26,7 @@ type Props = {
   debounceWait?: number;
 };
 
-const Input = forwardRef<HTMLInputElement, Props>(
+const Text = forwardRef<HTMLInputElement, Props>(
   (
     {
       type = 'rounded',
@@ -41,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
   ) => {
     return (
       <input
-        className={styles[`input-${type}`]}
+        className={styles[`text-${type}`]}
         style={{
           '--color': color,
           '--background-color': backgroundColor,
@@ -54,6 +54,6 @@ const Input = forwardRef<HTMLInputElement, Props>(
     );
   },
 );
-Input.displayName = 'input';
+Text.displayName = 'text';
 
-export { Input };
+export { Text };
