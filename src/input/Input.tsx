@@ -27,7 +27,18 @@ type Props = {
 };
 
 const Input = forwardRef<HTMLInputElement, Props>(
-  ({ type = 'rounded', color = 'black', backgroundColor = 'inherit', width = 'inherit', onChange, debounceWait, ...rest }: Props, ref) => {
+  (
+    {
+      type = 'rounded',
+      color = 'black',
+      backgroundColor = 'inherit',
+      width = 'inherit',
+      onChange,
+      debounceWait,
+      ...rest
+    }: Props,
+    ref,
+  ) => {
     return (
       <input
         className={styles[`input-${type}`]}

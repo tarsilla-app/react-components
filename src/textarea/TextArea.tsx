@@ -29,7 +29,18 @@ type Props = {
 };
 
 const TextArea = forwardRef<HTMLTextAreaElement, Props>(
-  ({ type = 'rounded', color = 'black', backgroundColor = 'inherit', width = 'inherit', onChange, debounceWait, ...rest }: Props, ref) => {
+  (
+    {
+      type = 'rounded',
+      color = 'black',
+      backgroundColor = 'inherit',
+      width = 'inherit',
+      onChange,
+      debounceWait,
+      ...rest
+    }: Props,
+    ref,
+  ) => {
     return (
       <textarea
         className={styles[`textarea-${type}`]}

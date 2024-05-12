@@ -4,7 +4,13 @@ import { forwardRef, useState } from 'react';
 
 import debounce from 'debounce';
 import { FaAngleDown, FaAngleUp, FaXmark } from 'react-icons/fa6';
-import ReactSelect, { ClearIndicatorProps, components, DropdownIndicatorProps, MenuPlacement, SelectInstance } from 'react-select';
+import ReactSelect, {
+  ClearIndicatorProps,
+  components,
+  DropdownIndicatorProps,
+  MenuPlacement,
+  SelectInstance,
+} from 'react-select';
 
 //TODO
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +34,11 @@ export type Option = SingleOption | GroupOption;
 const DropdownIndicator = (props: DropdownIndicatorProps<Option>) => {
   return (
     <components.DropdownIndicator {...props}>
-      {props.selectProps.menuIsOpen ? <FaAngleUp size={16} /> : <FaAngleDown size={16} />}
+      {props.selectProps.menuIsOpen ? (
+        <FaAngleUp size={16} />
+      ) : (
+        <FaAngleDown size={16} />
+      )}
     </components.DropdownIndicator>
   );
 };
@@ -78,7 +88,9 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
     },
     ref,
   ) => {
-    const [menuPlacementInternal, setMenuPlacementInternal] = useState(menuPlacement === 'auto' ? 'bottom' : menuPlacement);
+    const [menuPlacementInternal, setMenuPlacementInternal] = useState(
+      menuPlacement === 'auto' ? 'bottom' : menuPlacement,
+    );
     return (
       <ReactSelect
         components={{ DropdownIndicator, ClearIndicator }}
@@ -89,10 +101,26 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
               backgroundColor: backgroundColor,
               border: type === 'rounded' ? `1px solid ${color}` : '0px',
               borderBottom: `1px solid ${color}`,
-              borderTopLeftRadius: (!props.menuIsOpen || menuPlacementInternal === 'bottom') && type === 'rounded' ? '12px' : '0',
-              borderTopRightRadius: (!props.menuIsOpen || menuPlacementInternal === 'bottom') && type === 'rounded' ? '12px' : '0',
-              borderBottomLeftRadius: (!props.menuIsOpen || menuPlacementInternal === 'top') && type === 'rounded' ? '12px' : '0',
-              borderBottomRightRadius: (!props.menuIsOpen || menuPlacementInternal === 'top') && type === 'rounded' ? '12px' : '0',
+              borderTopLeftRadius:
+                (!props.menuIsOpen || menuPlacementInternal === 'bottom') &&
+                type === 'rounded'
+                  ? '12px'
+                  : '0',
+              borderTopRightRadius:
+                (!props.menuIsOpen || menuPlacementInternal === 'bottom') &&
+                type === 'rounded'
+                  ? '12px'
+                  : '0',
+              borderBottomLeftRadius:
+                (!props.menuIsOpen || menuPlacementInternal === 'top') &&
+                type === 'rounded'
+                  ? '12px'
+                  : '0',
+              borderBottomRightRadius:
+                (!props.menuIsOpen || menuPlacementInternal === 'top') &&
+                type === 'rounded'
+                  ? '12px'
+                  : '0',
               width: width,
               boxShadow: 'none',
               cursor: 'pointer',
@@ -117,8 +145,20 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             margin: '0',
             color: color,
           }),
-          placeholder: (styles) => ({ ...styles, color: color, fontSize: '16px', fontWeight: '700', margin: 0 }),
-          singleValue: (styles) => ({ ...styles, color: color, fontSize: '16px', fontWeight: '700', margin: 0 }),
+          placeholder: (styles) => ({
+            ...styles,
+            color: color,
+            fontSize: '16px',
+            fontWeight: '700',
+            margin: 0,
+          }),
+          singleValue: (styles) => ({
+            ...styles,
+            color: color,
+            fontSize: '16px',
+            fontWeight: '700',
+            margin: 0,
+          }),
           menu: (styles, { placement }) => {
             setTimeout(() => setMenuPlacementInternal(placement), 0);
             return {

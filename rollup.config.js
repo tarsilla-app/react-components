@@ -50,6 +50,7 @@ export default [
   ...generateBuild('input'),
   ...generateBuild('loading'),
   ...generateBuild('select'),
+  ...generateBuild('tab'),
   ...generateBuild('textarea'),
   ...generateBuild('toast'),
 ];

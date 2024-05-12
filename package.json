@@ -17,12 +17,7 @@
   },
   "types": "./lib/index.d.ts",
   "files": [
-    "lib/index.d.ts",
-    "lib/index.cjs",
-    "lib/index.mjs",
-    "lib/input/index.d.ts",
-    "lib/input/index.cjs",
-    "lib/input/index.mjs",
+    "lib",
     "README.md",
     "LICENSE"
   ],
@@ -54,7 +49,7 @@
     "@storybook/react": "^8.0.10",
     "@storybook/react-webpack5": "^8.0.10",
     "@storybook/test": "^8.0.10",
-    "@tarsilla/eslint-config": "^0.0.28",
+    "@tarsilla/eslint-config": "^0.0.30",
     "@types/eslint__js": "^8.42.3",
     "@types/react": "^18.3.1",
     "eslint": "^8.57.0",
