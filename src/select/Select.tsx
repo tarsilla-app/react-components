@@ -4,6 +4,7 @@ import debounce from 'debounce';
 import { FaAngleDown, FaAngleUp, FaXmark } from 'react-icons/fa6';
 import ReactSelect, {
   ClearIndicatorProps,
+  CoercedMenuPlacement,
   components,
   DropdownIndicatorProps,
   MenuPlacement,
@@ -50,73 +51,81 @@ const ClearIndicator = (props: ClearIndicatorProps<Option>) => {
 };
 
 type Props = {
-  type?: 'line' | 'rounded';
+  id?: string;
   placeholder?: string;
+  style?: 'line' | 'rounded';
   color?: string;
   selectedColor?: string;
   backgroundColor?: string;
   width?: string;
-
-  options?: Option[];
-
-  onChange: Handler;
   value?: Option | Option[]; //TODO string | string[]
-
-  isMulti?: boolean;
-  controlShouldRenderValue?: boolean;
-  hideSelectedOptions?: boolean;
-  closeMenuOnSelect?: boolean;
-  menuPlacement?: MenuPlacement;
-  menuIsOpen?: boolean;
+  defaultValue?: Option | Option[]; //TODO string | string[]
+  onChange: Handler;
+  required?: boolean;
+  disabled?: boolean;
   debounceWait?: number;
+  options?: Option[];
+  isMulti?: boolean;
+  menuPlacement?: MenuPlacement;
 };
 
 const Select = forwardRef<SelectInstance<Option>, Props>(
   (
     {
-      type = 'rounded',
+      id,
+      placeholder = undefined,
+      style = 'rounded',
       color = 'black',
-      selectedColor = 'black',
-      backgroundColor = 'white',
+      selectedColor = 'gray',
+      backgroundColor = 'inherit',
       width = 'inherit',
-      menuPlacement = 'auto',
-      debounceWait,
+      value,
+      defaultValue,
       onChange,
-      ...rest
+      required = false,
+      disabled = false,
+      debounceWait = undefined,
+      options,
+      isMulti = false,
+      menuPlacement = undefined,
     },
     ref,
   ) => {
-    const [menuPlacementInternal, setMenuPlacementInternal] = useState(
-      menuPlacement === 'auto' ? 'bottom' : menuPlacement,
-    );
+    const [menuPlacementInternal, setMenuPlacementInternal] =
+      useState<CoercedMenuPlacement>();
+    //TODO disabled colors
+    //TODO allow unselect
     return (
       <ReactSelect
+        id={id}
+        ref={ref}
+        placeholder={placeholder}
         components={{ DropdownIndicator, ClearIndicator }}
         styles={{
-          control: (styles, props) => {
+          control: (styles, { menuIsOpen }) => {
             return {
               ...styles,
               backgroundColor: backgroundColor,
-              border: type === 'rounded' ? `1px solid ${color}` : '0px',
+              border: style === 'rounded' ? `1px solid ${color}` : '0px',
               borderBottom: `1px solid ${color}`,
               borderTopLeftRadius:
-                (!props.menuIsOpen || menuPlacementInternal === 'bottom') &&
-                type === 'rounded'
+                (!menuIsOpen || menuPlacementInternal === 'bottom') &&
+                style === 'rounded'
                   ? '12px'
                   : '0',
               borderTopRightRadius:
-                (!props.menuIsOpen || menuPlacementInternal === 'bottom') &&
-                type === 'rounded'
+                (!menuIsOpen || menuPlacementInternal === 'bottom') &&
+                style === 'rounded'
                   ? '12px'
                   : '0',
               borderBottomLeftRadius:
-                (!props.menuIsOpen || menuPlacementInternal === 'top') &&
-                type === 'rounded'
+                (!menuIsOpen || menuPlacementInternal === 'top') &&
+                style === 'rounded'
                   ? '12px'
                   : '0',
               borderBottomRightRadius:
-                (!props.menuIsOpen || menuPlacementInternal === 'top') &&
-                type === 'rounded'
+                (!menuIsOpen || menuPlacementInternal === 'top') &&
+                style === 'rounded'
                   ? '12px'
                   : '0',
               width: width,
@@ -134,7 +143,7 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             ...styles,
             height: '22px',
             padding: '0 4px 0 8px',
-            paddingLeft: type === 'rounded' ? undefined : '0',
+            paddingLeft: style === 'rounded' ? undefined : '0',
           }),
           input: (styles) => ({
             ...styles,
@@ -216,7 +225,7 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             ...styles,
             color: color,
             padding: '2px 8px 0 0',
-            paddingRight: type === 'rounded' ? undefined : '0',
+            paddingRight: style === 'rounded' ? undefined : '0',
             ':hover': {
               ...styles[':hover'],
               color: color,
@@ -232,11 +241,18 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             },
           }),
         }}
-        ref={ref}
+        value={value}
+        defaultValue={defaultValue}
         onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
+        required={required}
+        isDisabled={disabled}
+        options={options}
+        isMulti={isMulti}
+        controlShouldRenderValue={!isMulti}
+        hideSelectedOptions={false}
+        closeMenuOnSelect={!isMulti}
         menuPlacement={menuPlacement}
         isSearchable={false} //TODO search
-        {...rest}
       />
     );
   },

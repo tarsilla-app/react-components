@@ -1,22 +1,20 @@
 .text-line {
   color: var(--color);
   background-color: var(--background-color);
-  border: 0;
-  border-bottom: 1px solid var(--color);
   font-size: 16px;
   font-weight: 700;
   width: var(--width);
+  height: 24px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  height: 24px;
+  border: 0;
+  border-bottom: 1px solid var(--color);
 }
 
 .text-rounded {
   color: var(--color);
   background-color: var(--background-color);
-  border: 1px solid var(--color);
-  border-radius: 12px;
   font-size: 16px;
   font-weight: 700;
   width: var(--width);
@@ -24,6 +22,8 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  border: 1px solid var(--color);
+  border-radius: 12px;
   padding-left: 8px;
   padding-right: 8px;
 }

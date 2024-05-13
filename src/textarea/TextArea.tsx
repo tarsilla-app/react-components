@@ -5,53 +5,65 @@ import debounce from 'debounce';
 import styles from './TextArea.module.css';
 
 type Props = {
-  type?: 'line' | 'rounded';
+  id?: string;
   placeholder?: string;
+  style?: 'line' | 'rounded';
   color?: string;
   backgroundColor?: string;
   width?: string;
-
-  rows?: number;
-
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur?: FocusEventHandler<HTMLTextAreaElement>;
-  name?: string;
-  min?: string | number;
-  max?: string | number;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: string;
-  required?: boolean;
-  disabled?: boolean;
   value?: string;
   defaultValue?: string;
+  onChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onBlur?: FocusEventHandler<HTMLTextAreaElement>;
+  maxLength?: number;
+  minLength?: number;
+  required?: boolean;
+  disabled?: boolean;
   debounceWait?: number;
+
+  rows?: number;
 };
 
 const TextArea = forwardRef<HTMLTextAreaElement, Props>(
   (
     {
-      type = 'rounded',
+      id,
+      placeholder = undefined,
+      style = 'rounded',
       color = 'black',
       backgroundColor = 'inherit',
       width = 'inherit',
+      value,
+      defaultValue,
       onChange,
-      debounceWait,
-      ...rest
-    }: Props,
+      onBlur,
+      minLength = undefined,
+      maxLength = undefined,
+      required = false,
+      disabled = false,
+      debounceWait = undefined,
+    },
     ref,
   ) => {
     return (
       <textarea
-        className={styles[`textarea-${type}`]}
+        ref={ref}
+        id={id}
+        placeholder={placeholder}
+        className={styles[`textarea-${style}`]}
         style={{
           '--color': color,
           '--background-color': backgroundColor,
           '--width': width,
         }}
+        value={value}
+        defaultValue={defaultValue}
         onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
-        ref={ref}
-        {...rest}
+        onBlur={onBlur}
+        minLength={minLength}
+        maxLength={maxLength}
+        required={required}
+        disabled={disabled}
       />
     );
   },

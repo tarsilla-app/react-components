@@ -5,51 +5,75 @@ import debounce from 'debounce';
 import styles from './Text.module.css';
 
 type Props = {
-  type?: 'line' | 'rounded';
+  id?: string;
   placeholder?: string;
+  type?: 'text' | 'number' | 'email' | 'password' | 'tel';
+  style?: 'line' | 'rounded';
   color?: string;
   backgroundColor?: string;
   width?: string;
-
+  value?: string;
+  defaultValue?: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
   onBlur?: FocusEventHandler<HTMLInputElement>;
-  name?: string;
-  min?: string | number;
-  max?: string | number;
+  min?: number;
+  max?: number;
   maxLength?: number;
   minLength?: number;
   pattern?: string;
   required?: boolean;
   disabled?: boolean;
-  value?: string;
-  defaultValue?: string;
   debounceWait?: number;
 };
 
 const Text = forwardRef<HTMLInputElement, Props>(
   (
     {
-      type = 'rounded',
+      id,
+      placeholder = undefined,
+      type = 'text',
+      style = 'rounded',
       color = 'black',
       backgroundColor = 'inherit',
       width = 'inherit',
+      value,
+      defaultValue,
       onChange,
-      debounceWait,
-      ...rest
-    }: Props,
+      onBlur,
+      min = undefined,
+      max = undefined,
+      minLength = undefined,
+      maxLength = undefined,
+      pattern = undefined,
+      required = false,
+      disabled = false,
+      debounceWait = undefined,
+    },
     ref,
   ) => {
     return (
       <input
-        className={styles[`text-${type}`]}
+        ref={ref}
+        id={id}
+        placeholder={placeholder}
+        type={type}
+        className={styles[`text-${style}`]}
         style={{
           '--color': color,
           '--background-color': backgroundColor,
           '--width': width,
         }}
+        value={value}
+        defaultValue={defaultValue}
         onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
-        ref={ref}
-        {...rest}
+        onBlur={onBlur}
+        min={min}
+        max={max}
+        minLength={minLength}
+        maxLength={maxLength}
+        pattern={pattern}
+        required={required}
+        disabled={disabled}
       />
     );
   },

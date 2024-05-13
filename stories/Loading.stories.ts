@@ -9,7 +9,15 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    color: {
+      control: 'color',
+      table: {
+        type: { summary: 'text' },
+      },
+      description: 'set color',
+    },
+  },
   args: {},
 } satisfies Meta<typeof Loading>;
 

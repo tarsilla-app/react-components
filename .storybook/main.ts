@@ -29,5 +29,16 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
+  /*typescript: {
+    reactDocgen: 'react-docgen-typescript',
+    reactDocgenTypescriptOptions: {
+      compilerOptions: {
+        allowSyntheticDefaultImports: false,
+        esModuleInterop: false,
+      },
+      shouldExtractLiteralValuesFromEnum: true,
+      tsconfigPath: '../tsconfig.json',
+    },
+  },*/
 };
 export default config;
