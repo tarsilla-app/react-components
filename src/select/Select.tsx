@@ -243,4 +243,4 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
 );
 Select.displayName = 'select';
 
-export { Select };
+export { Select, Props as SelectProps };

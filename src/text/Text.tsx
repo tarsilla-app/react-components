@@ -56,4 +56,4 @@ const Text = forwardRef<HTMLInputElement, Props>(
 );
 Text.displayName = 'text';
 
-export { Text };
+export { Text, Props as TextProps };

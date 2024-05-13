@@ -37,4 +37,4 @@ function Toast(): JSX.Element {
   );
 }
 
-export { Toast };
+export { Toast, Props as ToastProps };

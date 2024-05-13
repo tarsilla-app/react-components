@@ -25,4 +25,4 @@ function TabWrapper({ tabs }: Props): JSX.Element {
   );
 }
 
-export { TabWrapper };
+export { TabWrapper, Props as TabWrapperProps };
