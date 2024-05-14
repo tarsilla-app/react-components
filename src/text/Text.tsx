@@ -57,6 +57,7 @@ const Text = forwardRef<HTMLInputElement, Props>(
     ref,
   ) => {
     const appliedStyle = { ...defaultStyle, ...style };
+    //TODO disabled colors
     return (
       <input
         ref={ref}

@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 import 'react-tabs/style/react-tabs.css';
@@ -7,11 +9,12 @@ type Props = {
     header: JSX.Element;
     content: JSX.Element;
   }[];
+  style?: CSSProperties;
 };
 
-function TabWrapper({ tabs }: Props): JSX.Element {
+function TabWrapper({ tabs, style }: Props): JSX.Element {
   return (
-    <Tabs>
+    <Tabs style={style}>
       <TabList>
         {tabs.map((tab, index) => (
           <Tab key={index}>{tab.header}</Tab>

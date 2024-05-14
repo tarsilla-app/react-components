@@ -51,6 +51,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
     ref,
   ) => {
     const appliedStyle = { ...defaultStyle, ...style };
+    //TODO disabled colors
     return (
       <textarea
         ref={ref}

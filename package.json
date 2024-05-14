@@ -1,6 +1,6 @@
 {
   "name": "@tarsilla/react-components",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "engines": {
     "node": ">=20.12.2"
   },
