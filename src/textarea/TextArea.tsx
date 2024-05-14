@@ -7,10 +7,12 @@ import styles from './TextArea.module.css';
 type Props = {
   id?: string;
   placeholder?: string;
-  style?: 'line' | 'rounded';
-  color?: string;
-  backgroundColor?: string;
-  width?: string;
+  style?: {
+    type?: 'line' | 'rounded';
+    color?: string;
+    backgroundColor?: string;
+    width?: string;
+  };
   value?: string;
   defaultValue?: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
@@ -24,15 +26,18 @@ type Props = {
   rows?: number;
 };
 
+const defaultStyle = {
+  type: 'rounded',
+  color: 'black',
+  backgroundColor: 'inherit',
+  width: 'inherit',
+};
 const TextArea = forwardRef<HTMLTextAreaElement, Props>(
   (
     {
       id,
       placeholder = undefined,
-      style = 'rounded',
-      color = 'black',
-      backgroundColor = 'inherit',
-      width = 'inherit',
+      style,
       value,
       defaultValue,
       onChange,
@@ -45,16 +50,17 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
     },
     ref,
   ) => {
+    const appliedStyle = { ...defaultStyle, ...style };
     return (
       <textarea
         ref={ref}
         id={id}
         placeholder={placeholder}
-        className={styles[`textarea-${style}`]}
+        className={styles[`textarea-${appliedStyle.type}`]}
         style={{
-          '--color': color,
-          '--background-color': backgroundColor,
-          '--width': width,
+          '--color': appliedStyle.color,
+          '--background-color': appliedStyle.backgroundColor,
+          '--width': appliedStyle.width,
         }}
         value={value}
         defaultValue={defaultValue}

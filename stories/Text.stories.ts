@@ -26,32 +26,38 @@ const meta = {
         type: { summary: 'text' },
       },
     },
-    style: {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    'style.type': {
       control: 'select',
       table: {
         type: { summary: 'text' },
+        defaultValue: { summary: 'rounded' },
       },
       options: ['rounded', 'line'],
       description: 'style type',
     },
-    color: {
+    'style.color': {
       control: 'color',
       table: {
         type: { summary: 'text' },
+        defaultValue: { summary: 'black' },
       },
       description: 'set color',
     },
-    backgroundColor: {
+    'style.backgroundColor': {
       control: 'color',
       table: {
         type: { summary: 'text' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set background color',
     },
-    width: {
+    'style.width': {
       control: 'text',
       table: {
         type: { summary: 'text' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'width',
     },

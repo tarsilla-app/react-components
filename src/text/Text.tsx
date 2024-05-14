@@ -8,10 +8,12 @@ type Props = {
   id?: string;
   placeholder?: string;
   type?: 'text' | 'number' | 'email' | 'password' | 'tel';
-  style?: 'line' | 'rounded';
-  color?: string;
-  backgroundColor?: string;
-  width?: string;
+  style?: {
+    type?: 'line' | 'rounded';
+    color?: string;
+    backgroundColor?: string;
+    width?: string;
+  };
   value?: string;
   defaultValue?: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
@@ -26,16 +28,19 @@ type Props = {
   debounceWait?: number;
 };
 
+const defaultStyle = {
+  type: 'rounded',
+  color: 'black',
+  backgroundColor: 'inherit',
+  width: 'inherit',
+};
 const Text = forwardRef<HTMLInputElement, Props>(
   (
     {
       id,
       placeholder = undefined,
       type = 'text',
-      style = 'rounded',
-      color = 'black',
-      backgroundColor = 'inherit',
-      width = 'inherit',
+      style,
       value,
       defaultValue,
       onChange,
@@ -51,17 +56,18 @@ const Text = forwardRef<HTMLInputElement, Props>(
     },
     ref,
   ) => {
+    const appliedStyle = { ...defaultStyle, ...style };
     return (
       <input
         ref={ref}
         id={id}
         placeholder={placeholder}
         type={type}
-        className={styles[`text-${style}`]}
+        className={styles[`text-${appliedStyle.type}`]}
         style={{
-          '--color': color,
-          '--background-color': backgroundColor,
-          '--width': width,
+          '--color': appliedStyle.color,
+          '--background-color': appliedStyle.backgroundColor,
+          '--width': appliedStyle.width,
         }}
         value={value}
         defaultValue={defaultValue}

@@ -53,11 +53,13 @@ const ClearIndicator = (props: ClearIndicatorProps<Option>) => {
 type Props = {
   id?: string;
   placeholder?: string;
-  style?: 'line' | 'rounded';
-  color?: string;
-  selectedColor?: string;
-  backgroundColor?: string;
-  width?: string;
+  style?: {
+    type?: 'line' | 'rounded';
+    color?: string;
+    selectedColor?: string;
+    backgroundColor?: string;
+    width?: string;
+  };
   value?: Option | Option[]; //TODO string | string[]
   defaultValue?: Option | Option[]; //TODO string | string[]
   onChange: Handler;
@@ -69,16 +71,19 @@ type Props = {
   menuPlacement?: MenuPlacement;
 };
 
+const defaultStyle = {
+  type: 'rounded',
+  color: 'black',
+  selectedColor: 'gray',
+  backgroundColor: 'inherit',
+  width: 'inherit',
+};
 const Select = forwardRef<SelectInstance<Option>, Props>(
   (
     {
       id,
       placeholder = undefined,
-      style = 'rounded',
-      color = 'black',
-      selectedColor = 'gray',
-      backgroundColor = 'inherit',
-      width = 'inherit',
+      style,
       value,
       defaultValue,
       onChange,
@@ -87,14 +92,18 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
       debounceWait = undefined,
       options,
       isMulti = false,
-      menuPlacement = undefined,
+      menuPlacement = 'bottom',
     },
     ref,
   ) => {
+    const appliedStyle = { ...defaultStyle, ...style };
     const [menuPlacementInternal, setMenuPlacementInternal] =
-      useState<CoercedMenuPlacement>();
+      useState<CoercedMenuPlacement>(
+        menuPlacement === 'auto' ? 'bottom' : menuPlacement,
+      );
     //TODO disabled colors
     //TODO allow unselect
+    //TODO translator
     return (
       <ReactSelect
         id={id}
@@ -105,35 +114,38 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
           control: (styles, { menuIsOpen }) => {
             return {
               ...styles,
-              backgroundColor: backgroundColor,
-              border: style === 'rounded' ? `1px solid ${color}` : '0px',
-              borderBottom: `1px solid ${color}`,
+              backgroundColor: appliedStyle.backgroundColor,
+              border:
+                appliedStyle.type === 'line'
+                  ? '0px'
+                  : `1px solid ${appliedStyle.color}`,
+              borderBottom: `1px solid ${appliedStyle.color}`,
               borderTopLeftRadius:
                 (!menuIsOpen || menuPlacementInternal === 'bottom') &&
-                style === 'rounded'
+                appliedStyle.type === 'rounded'
                   ? '12px'
                   : '0',
               borderTopRightRadius:
                 (!menuIsOpen || menuPlacementInternal === 'bottom') &&
-                style === 'rounded'
+                appliedStyle.type === 'rounded'
                   ? '12px'
                   : '0',
               borderBottomLeftRadius:
                 (!menuIsOpen || menuPlacementInternal === 'top') &&
-                style === 'rounded'
+                appliedStyle.type === 'rounded'
                   ? '12px'
                   : '0',
               borderBottomRightRadius:
                 (!menuIsOpen || menuPlacementInternal === 'top') &&
-                style === 'rounded'
+                appliedStyle.type === 'rounded'
                   ? '12px'
                   : '0',
-              width: width,
+              width: appliedStyle.width,
               boxShadow: 'none',
               cursor: 'pointer',
               ':hover': {
                 ...styles[':hover'],
-                borderColor: color,
+                borderColor: appliedStyle.color,
               },
               minHeight: '24px',
               height: '24px',
@@ -143,25 +155,25 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             ...styles,
             height: '22px',
             padding: '0 4px 0 8px',
-            paddingLeft: style === 'rounded' ? undefined : '0',
+            paddingLeft: appliedStyle.type === 'line' ? '0' : undefined,
           }),
           input: (styles) => ({
             ...styles,
             height: '22px',
             padding: '0',
             margin: '0',
-            color: color,
+            color: appliedStyle.color,
           }),
           placeholder: (styles) => ({
             ...styles,
-            color: color,
+            color: appliedStyle.color,
             fontSize: '16px',
             fontWeight: '700',
             margin: 0,
           }),
           singleValue: (styles) => ({
             ...styles,
-            color: color,
+            color: appliedStyle.color,
             fontSize: '16px',
             fontWeight: '700',
             margin: 0,
@@ -170,13 +182,13 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             setTimeout(() => setMenuPlacementInternal(placement), 0);
             return {
               ...styles,
-              backgroundColor: backgroundColor,
-              border: `1px solid ${color}`,
+              backgroundColor: appliedStyle.backgroundColor,
+              border: `1px solid ${appliedStyle.color}`,
               borderTopLeftRadius: placement === 'top' ? '12px' : '0',
               borderTopRightRadius: placement === 'top' ? '12px' : '0',
               borderBottomLeftRadius: placement === 'top' ? '0' : '12px',
               borderBottomRightRadius: placement === 'top' ? '0' : '12px',
-              maxWidth: width,
+              maxWidth: appliedStyle.width,
               margin: '0',
             };
           },
@@ -186,7 +198,7 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
           }),
           group: (styles) => ({
             ...styles,
-            borderBottom: `1px solid ${color}`,
+            borderBottom: `1px solid ${appliedStyle.color}`,
             ':last-of-type': {
               borderBottom: 0,
             },
@@ -195,7 +207,9 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             return {
               ...styles,
               backgroundColor: 'transparent',
-              color: isSelected ? selectedColor : color,
+              color: isSelected
+                ? appliedStyle.selectedColor
+                : appliedStyle.color,
               cursor: 'pointer',
               ':active': {
                 ...styles[':active'],
@@ -206,7 +220,7 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
               fontWeight: '700',
               margin: '0 6px',
               padding: '2px 6px',
-              borderBottom: `1px solid ${color}`,
+              borderBottom: `1px solid ${appliedStyle.color}`,
               ':last-of-type': {
                 borderBottom: 0,
               },
@@ -223,21 +237,21 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
           }),
           dropdownIndicator: (styles) => ({
             ...styles,
-            color: color,
+            color: appliedStyle.color,
             padding: '2px 8px 0 0',
-            paddingRight: style === 'rounded' ? undefined : '0',
+            paddingRight: appliedStyle.type === 'line' ? '0' : undefined,
             ':hover': {
               ...styles[':hover'],
-              color: color,
+              color: appliedStyle.color,
             },
           }),
           clearIndicator: (styles) => ({
             ...styles,
-            color: color,
+            color: appliedStyle.color,
             padding: '0 4px 0 0',
             ':hover': {
               ...styles[':hover'],
-              color: color,
+              color: appliedStyle.color,
             },
           }),
         }}
