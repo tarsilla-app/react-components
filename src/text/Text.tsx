@@ -37,6 +37,7 @@ const Container = styled.input<ContainerProps>`
   }
 
   :focus,
+  :focus-visible {
     outline: none;
   }
 `;

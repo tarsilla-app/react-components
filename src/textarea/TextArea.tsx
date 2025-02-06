@@ -17,7 +17,6 @@ const Container = styled.textarea<ContainerProps>`
   line-height: 21px;
   font-weight: 700;
   width: ${({ width }) => `${width}`};
-  height: 24px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -38,6 +37,7 @@ const Container = styled.textarea<ContainerProps>`
   }
 
   :focus,
+  :focus-visible {
     outline: none;
   }
 `;
@@ -91,7 +91,6 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
   ) => {
     const appliedStyle = { ...defaultStyle, ...style };
     //TODO disabled colors
-    //TODO ros not working
     return (
       <Container
         ref={ref}
@@ -106,6 +105,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
         maxLength={maxLength}
         required={required}
         disabled={disabled}
+        aria-multiline='true'
         rows={rows}
       />
     );
