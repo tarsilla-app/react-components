@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Toast } from '../src/toast';
 
-const meta = {
+const meta: Meta<typeof Toast> = {
   title: 'Toast',
   component: Toast,
   parameters: {
@@ -11,7 +11,7 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {},
   args: {},
-} satisfies Meta<typeof Toast>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

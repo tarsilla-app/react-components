@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
 import { Text } from '../src/text';
 
-const meta = {
+const meta: Meta<typeof Text> = {
   title: 'Text',
   component: Text,
   parameters: {
@@ -11,10 +15,19 @@ const meta = {
   },
   tags: ['autodocs'],
   argTypes: {
+    id: {
+      control: 'text',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'undefined' },
+      },
+      description: 'id',
+    },
     type: {
       control: 'select',
       table: {
         type: { summary: 'text' },
+        defaultValue: { summary: 'text' },
       },
       options: ['text', 'number', 'email', 'password', 'tel'],
       description: 'input type',
@@ -24,20 +37,28 @@ const meta = {
       description: 'placeholder',
       table: {
         type: { summary: 'text' },
+        defaultValue: { summary: 'undefined' },
       },
     },
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    style: {
+      control: 'object',
+      table: {
+        disable: true,
+        type: { summary: 'object' },
+      },
+      description: 'style',
+    },
     // @ts-ignore
-    'style.type': {
+    layoutType: {
       control: 'select',
       table: {
         type: { summary: 'text' },
         defaultValue: { summary: 'rounded' },
       },
       options: ['rounded', 'line'],
-      description: 'style type',
+      description: 'layout type',
     },
-    'style.color': {
+    color: {
       control: 'color',
       table: {
         type: { summary: 'text' },
@@ -45,7 +66,7 @@ const meta = {
       },
       description: 'set color',
     },
-    'style.backgroundColor': {
+    backgroundColor: {
       control: 'color',
       table: {
         type: { summary: 'text' },
@@ -53,7 +74,7 @@ const meta = {
       },
       description: 'set background color',
     },
-    'style.width': {
+    width: {
       control: 'text',
       table: {
         type: { summary: 'text' },
@@ -114,17 +135,60 @@ const meta = {
       control: 'number',
       table: {
         type: { summary: 'number' },
+        defaultValue: { summary: 'undefined' },
       },
       description: 'debounce wait',
+    },
+    value: {
+      control: false,
+      disable: true,
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'undefined' },
+      },
+      description: 'value',
+    },
+    defaultValue: {
+      control: 'text',
+      disable: true,
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'undefined' },
+      },
+      description: 'default value',
     },
   },
   args: {
     onChange: fn(),
     onBlur: fn(),
   },
-} satisfies Meta<typeof Text>;
+  decorators: [
+    (Story: any, { args }: any): JSX.Element => {
+      const { layoutType, color, backgroundColor, width, ...rest } = args;
+      const updatedArgs = {
+        ...rest,
+        style: { layoutType, color, backgroundColor, width },
+      };
+      return <Story args={updatedArgs} />;
+    },
+  ],
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    placeholder: 'Placeholder',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'inherit',
+    width: '150px',
+    required: false,
+    disabled: false,
+    debounceWait: 10,
+  },
+};

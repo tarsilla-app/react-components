@@ -1,45 +1,25 @@
-import type { StorybookConfig } from '@storybook/react-webpack5';
+import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
-  stories: [
-    '../stories/**/*.mdx',
-    '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-  ],
-  addons: [
-    '@storybook/addon-webpack5-compiler-swc',
-    '@storybook/addon-onboarding',
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@chromatic-com/storybook',
-    '@storybook/addon-interactions',
-    'storybook-addon-deep-controls',
-  ],
+  stories: ['../stories/**/*.mdx', '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  addons: ['@storybook/addon-essentials', '@chromatic-com/storybook', '@storybook/addon-interactions'],
   framework: {
-    name: '@storybook/react-webpack5',
+    name: '@storybook/react-vite',
     options: {},
   },
-  swc: () => ({
-    jsc: {
-      transform: {
-        react: {
-          runtime: 'automatic',
-        },
+  viteFinal(config) {
+    config.plugins = config.plugins || [];
+    config.plugins.push({
+      name: 'strip-null-byte',
+      resolveId(source) {
+        // Only process Storybook virtual modules starting with a null byte
+        if (source.startsWith('\0') && source.includes('@storybook/builder-vite')) {
+          return source.replace('\0', '');
+        }
+        return null; // Let Vite handle other modules
       },
-    },
-  }),
-  docs: {
-    autodocs: 'tag',
+    });
+    return config;
   },
-  /*typescript: {
-    reactDocgen: 'react-docgen-typescript',
-    reactDocgenTypescriptOptions: {
-      compilerOptions: {
-        allowSyntheticDefaultImports: false,
-        esModuleInterop: false,
-      },
-      shouldExtractLiteralValuesFromEnum: true,
-      tsconfigPath: '../tsconfig.json',
-    },
-  },*/
 };
 export default config;

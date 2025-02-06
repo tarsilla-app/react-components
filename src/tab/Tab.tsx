@@ -14,7 +14,7 @@ type Props = {
 
 function TabWrapper({ tabs, style }: Props): JSX.Element {
   return (
-    <Tabs style={style}>
+    <Tabs style={{ width: '100%', height: '100%', ...style }}>
       <TabList>
         {tabs.map((tab, index) => (
           <Tab key={index}>{tab.header}</Tab>

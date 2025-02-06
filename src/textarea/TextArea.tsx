@@ -1,14 +1,52 @@
 import { ChangeEventHandler, FocusEventHandler, forwardRef } from 'react';
 
+import styled from '@emotion/styled';
 import debounce from 'debounce';
 
-import styles from './TextArea.module.css';
+type ContainerProps = {
+  layoutType: string;
+  color: string;
+  backgroundColor: string;
+  width: string;
+};
+
+const Container = styled.textarea<ContainerProps>`
+  color: ${({ color }) => `${color}`};
+  background-color: ${({ backgroundColor }) => `${backgroundColor}`};
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: 700;
+  width: ${({ width }) => `${width}`};
+  height: 24px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  border: ${({ layoutType, color }) => `${layoutType === 'line' ? 0 : `1px solid ${color}`}`};
+  border-bottom: ${({ layoutType, color }) => `${layoutType === 'line' ? `1px solid ${color}` : undefined}`};
+  border-radius: ${({ layoutType }) => `${layoutType === 'line' ? undefined : '12px'}`};
+  padding: ${({ layoutType }) => `${layoutType === 'line' ? '2px 2px' : undefined}`};
+  padding-left: ${({ layoutType }) => `${layoutType === 'line' ? undefined : '8px'}`};
+  padding-right: ${({ layoutType }) => `${layoutType === 'line' ? undefined : '8px'}`};
+
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    color: ${({ color }) => `${color}`};
+  }
+  :-ms-input-placeholder {
+    color: ${({ color }) => `${color}`};
+  }
+
+  :focus,
+    outline: none;
+  }
+`;
 
 type Props = {
   id?: string;
   placeholder?: string;
   style?: {
-    type?: 'line' | 'rounded';
+    layoutType?: 'line' | 'rounded';
     color?: string;
     backgroundColor?: string;
     width?: string;
@@ -27,7 +65,7 @@ type Props = {
 };
 
 const defaultStyle = {
-  type: 'rounded',
+  layoutType: 'rounded',
   color: 'black',
   backgroundColor: 'inherit',
   width: 'inherit',
@@ -47,22 +85,19 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
       required = false,
       disabled = false,
       debounceWait = undefined,
+      rows = undefined,
     },
     ref,
   ) => {
     const appliedStyle = { ...defaultStyle, ...style };
     //TODO disabled colors
+    //TODO ros not working
     return (
-      <textarea
+      <Container
         ref={ref}
         id={id}
         placeholder={placeholder}
-        className={styles[`textarea-${appliedStyle.type}`]}
-        style={{
-          '--color': appliedStyle.color,
-          '--background-color': appliedStyle.backgroundColor,
-          '--width': appliedStyle.width,
-        }}
+        {...appliedStyle}
         value={value}
         defaultValue={defaultValue}
         onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
@@ -71,6 +106,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
         maxLength={maxLength}
         required={required}
         disabled={disabled}
+        rows={rows}
       />
     );
   },

@@ -1,35 +1,62 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
 import { Select } from '../src/select';
 
-const meta = {
+const meta: Meta<typeof Select> = {
   title: 'Select',
   component: Select,
   parameters: {
     layout: 'centered',
+    docs: {
+      story: {
+        inline: false,
+        iframeHeight: 150,
+        iframeWidth: 400,
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
+    id: {
+      control: 'text',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'undefined' },
+      },
+      description: 'id',
+    },
     placeholder: {
       control: 'text',
       table: {
         type: { summary: 'text' },
+        defaultValue: { summary: 'Select' },
       },
       description: 'placeholder',
     },
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    style: {
+      control: 'object',
+      table: {
+        disable: true,
+        type: { summary: 'object' },
+      },
+      description: 'style',
+    },
     // @ts-ignore
-    'style.type': {
+    layoutType: {
       control: 'select',
       table: {
         type: { summary: 'text' },
         defaultValue: { summary: 'rounded' },
       },
       options: ['rounded', 'line'],
-      description: 'style type',
+      description: 'layout type',
     },
-    'style.color': {
+    color: {
       control: 'color',
       table: {
         type: { summary: 'text' },
@@ -37,7 +64,7 @@ const meta = {
       },
       description: 'set color',
     },
-    'style.selectedColor': {
+    selectedColor: {
       control: 'color',
       table: {
         type: { summary: 'text' },
@@ -45,7 +72,7 @@ const meta = {
       },
       description: 'set selected item color',
     },
-    'style.backgroundColor': {
+    backgroundColor: {
       control: 'color',
       table: {
         type: { summary: 'text' },
@@ -53,7 +80,7 @@ const meta = {
       },
       description: 'set background color',
     },
-    'style.width': {
+    width: {
       control: 'text',
       table: {
         type: { summary: 'text' },
@@ -82,9 +109,10 @@ const meta = {
       },
     },
     isMulti: {
-      control: 'boolean',
+      control: false,
       table: {
         type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
       description: 'if true, select is multi',
     },
@@ -94,14 +122,33 @@ const meta = {
         type: { summary: 'text' },
       },
       options: ['auto', 'bottom', 'top'],
-      description: 'style type',
+      description: 'menu placement',
     },
     debounceWait: {
       control: 'number',
       table: {
         type: { summary: 'number' },
+        defaultValue: { summary: 'undefined' },
       },
       description: 'debounce wait',
+    },
+    value: {
+      control: false,
+      disable: true,
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'undefined' },
+      },
+      description: 'value',
+    },
+    defaultValue: {
+      control: 'select',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'undefined' },
+      },
+      options: ['1', '2'],
+      description: 'default value',
     },
   },
   args: {
@@ -117,9 +164,37 @@ const meta = {
       },
     ],
   },
-} satisfies Meta<typeof Select>;
+  decorators: [
+    (Story: any, { args }: any): JSX.Element => {
+      const { layoutType, color, selectedColor, backgroundColor, width, ...rest } = args;
+      const updatedArgs = {
+        ...rest,
+        style: { layoutType, color, selectedColor, backgroundColor, width },
+      };
+      return <Story args={updatedArgs} />;
+    },
+  ],
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    id: 'id-123',
+    placeholder: 'Select',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    selectedColor: 'gray',
+    backgroundColor: 'inherit',
+    width: '100px',
+    required: false,
+    disabled: false,
+    debounceWait: 10,
+    isMulti: false,
+    menuPlacement: 'bottom',
+    defaultValue: '1',
+    value: undefined,
+  },
+};

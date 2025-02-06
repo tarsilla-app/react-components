@@ -1,16 +1,30 @@
 import { useState } from 'react';
 
+import styled from '@emotion/styled';
 import { Id, toast, ToastContainer, ToastItem } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import styles from './Toast.module.css';
+const Container = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  opacity: 0.5;
+  background-color: black;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+`;
 
-type Props = {
+type ToastProps = {
   loading: Id[];
 };
 
-function Loading({ loading }: Props) {
-  return loading.length > 0 ? <div className={styles.loading} /> : undefined;
+function Loading({ loading }: ToastProps) {
+  return loading.length > 0 ? <Container /> : undefined;
 }
 
 //TODO error on console
@@ -37,4 +51,4 @@ function Toast(): JSX.Element {
   );
 }
 
-export { Toast, Props as ToastProps };
+export { Toast };
