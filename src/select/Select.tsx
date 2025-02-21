@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { FocusEventHandler, forwardRef, useState } from 'react';
 
 import debounce from 'debounce';
 import { FaAngleDown, FaAngleUp, FaXmark } from 'react-icons/fa6';
@@ -8,16 +8,15 @@ import ReactSelect, {
   components,
   DropdownIndicatorProps,
   MenuPlacement,
+  MultiValueRemoveProps,
+  OnChangeValue,
   SelectInstance,
 } from 'react-select';
-
-//TODO
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Handler = (...event: any[]) => void;
 
 export type SingleOption = {
   label: string;
   value: string;
+  isDisabled?: boolean;
 };
 
 export type GroupOption = {
@@ -25,10 +24,13 @@ export type GroupOption = {
   options: {
     label: string;
     value: string;
+    isDisabled?: boolean;
   }[];
 };
 
 export type Option = SingleOption | GroupOption;
+
+export type IsMulti = boolean;
 
 function getValue(options?: Option[], value?: string | string[]): SingleOption | SingleOption[] | undefined {
   if (options && value) {
@@ -39,8 +41,10 @@ function getValue(options?: Option[], value?: string | string[]): SingleOption |
         if ('value' in option && value.includes(option.value)) {
           result.push(option);
         } else if ('options' in option) {
-          const found = option.options.filter((option) => value.includes(option.value));
-          result.concat(found);
+          const founds = option.options.filter((option) => value.includes(option.value));
+          founds.forEach((found) => {
+            result.push(found);
+          });
         }
       });
       return result;
@@ -52,6 +56,33 @@ function getValue(options?: Option[], value?: string | string[]): SingleOption |
         } else if ('options' in option) {
           return option.options.find((option) => option.value === value);
         }
+      }
+    }
+  }
+  return undefined;
+}
+
+function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): string | string[] | undefined {
+  if (newValues) {
+    if (Array.isArray(newValues)) {
+      //multiple
+      const result: string[] = [];
+      newValues.forEach((newValue: Option) => {
+        if ('value' in newValue) {
+          result.push(newValue.value.toString());
+        } else if ('options' in newValue) {
+          newValue.options.forEach((option) => {
+            result.push(option.value.toString());
+          });
+        }
+      });
+      return result;
+    } else {
+      // single
+      if ('value' in newValues) {
+        return newValues.value.toString();
+      } else if ('options' in newValues) {
+        return newValues.options[0].value.toString();
       }
     }
   }
@@ -74,94 +105,106 @@ function ClearIndicator(props: ClearIndicatorProps<Option>) {
   );
 }
 
-type Props = {
+function MultiValueRemove(props: MultiValueRemoveProps<Option>) {
+  return (
+    <components.MultiValueRemove {...props}>
+      <FaXmark size={16} />
+    </components.MultiValueRemove>
+  );
+}
+
+type SelectProps<Option> = {
   id?: string;
   placeholder?: string;
+  noOptionsMessage?: string;
   style?: {
     layoutType?: 'line' | 'rounded';
     color?: string;
-    selectedColor?: string;
     backgroundColor?: string;
+    disabledBackgroundColor?: string;
+    disabledColor?: string;
+    selectedItemColor?: string;
+    disabledItemColor?: string;
     width?: string;
   };
   value?: string | string[];
   defaultValue?: string | string[];
-  onChange: Handler;
+  onChange: (value?: string | string[]) => void;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
   required?: boolean;
   disabled?: boolean;
   debounceWait?: number;
   options?: Option[];
+  isSearchable?: boolean;
   isMulti?: boolean;
   menuPlacement?: MenuPlacement;
 };
 
-const defaultStyle = {
-  layoutType: 'rounded',
-  color: 'black',
-  selectedColor: 'gray',
-  backgroundColor: 'inherit',
-  width: 'inherit',
-};
-const Select = forwardRef<SelectInstance<Option>, Props>(
+const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
   (
     {
       id,
       placeholder = 'Select',
-      style,
+      noOptionsMessage = 'No options',
+      style: {
+        layoutType = 'rounded',
+        color = 'black',
+        backgroundColor = 'white',
+        disabledColor = 'gray',
+        disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+        selectedItemColor = 'blue',
+        disabledItemColor = 'gray',
+        width = 'inherit',
+      } = {},
       value,
       defaultValue,
       onChange,
+      onBlur,
       required = false,
       disabled = false,
       debounceWait = undefined,
       options,
       isMulti = false,
+      isSearchable = false,
       menuPlacement = 'bottom',
     },
     ref,
   ) => {
-    const appliedStyle = { ...defaultStyle, ...style };
     const [menuPlacementInternal, setMenuPlacementInternal] = useState<CoercedMenuPlacement>(
       menuPlacement === 'auto' ? 'bottom' : menuPlacement,
     );
-    //TODO disabled colors
-    //TODO allow unselect
-    //TODO translator
+
+    function appliedOnChange(newValue: OnChangeValue<Option, IsMulti>) {
+      onChange(getOnChangeValue(newValue));
+    }
     return (
       <ReactSelect
-        id={id}
         ref={ref}
+        id={id}
         placeholder={placeholder}
-        components={{ DropdownIndicator, ClearIndicator }}
+        noOptionsMessage={() => noOptionsMessage}
+        components={{ DropdownIndicator, ClearIndicator, MultiValueRemove }}
         styles={{
-          control: (styles, { menuIsOpen }) => {
+          control: (styles, { menuIsOpen, isDisabled }) => {
             return {
               ...styles,
-              backgroundColor: appliedStyle.backgroundColor,
-              border: appliedStyle.layoutType === 'line' ? '0px' : `1px solid ${appliedStyle.color}`,
-              borderBottom: `1px solid ${appliedStyle.color}`,
+              backgroundColor: isDisabled ? disabledBackgroundColor : backgroundColor,
+              border: layoutType === 'line' ? '0px' : `1px solid ${isDisabled ? disabledColor : color}`,
+              borderBottom: `1px solid ${isDisabled ? disabledColor : color}`,
               borderTopLeftRadius:
-                (!menuIsOpen || menuPlacementInternal === 'bottom') && appliedStyle.layoutType === 'rounded'
-                  ? '12px'
-                  : '0',
+                (!menuIsOpen || menuPlacementInternal === 'bottom') && layoutType === 'rounded' ? '12px' : '0',
               borderTopRightRadius:
-                (!menuIsOpen || menuPlacementInternal === 'bottom') && appliedStyle.layoutType === 'rounded'
-                  ? '12px'
-                  : '0',
+                (!menuIsOpen || menuPlacementInternal === 'bottom') && layoutType === 'rounded' ? '12px' : '0',
               borderBottomLeftRadius:
-                (!menuIsOpen || menuPlacementInternal === 'top') && appliedStyle.layoutType === 'rounded'
-                  ? '12px'
-                  : '0',
+                (!menuIsOpen || menuPlacementInternal === 'top') && layoutType === 'rounded' ? '12px' : '0',
               borderBottomRightRadius:
-                (!menuIsOpen || menuPlacementInternal === 'top') && appliedStyle.layoutType === 'rounded'
-                  ? '12px'
-                  : '0',
-              width: appliedStyle.width,
+                (!menuIsOpen || menuPlacementInternal === 'top') && layoutType === 'rounded' ? '12px' : '0',
+              width: width,
               boxShadow: 'none',
               cursor: 'pointer',
               ':hover': {
                 ...styles[':hover'],
-                borderColor: appliedStyle.color,
+                borderColor: isDisabled ? disabledColor : color,
               },
               minHeight: '24px',
               height: '24px',
@@ -171,25 +214,25 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             ...styles,
             height: '22px',
             padding: '0 4px 0 8px',
-            paddingLeft: appliedStyle.layoutType === 'line' ? '0' : undefined,
+            paddingLeft: layoutType === 'line' ? '0' : undefined,
           }),
-          input: (styles) => ({
+          input: (styles, { isDisabled }) => ({
             ...styles,
             height: '22px',
             padding: '0',
             margin: '0',
-            color: appliedStyle.color,
+            color: isDisabled ? disabledColor : color,
           }),
-          placeholder: (styles) => ({
+          placeholder: (styles, { isDisabled }) => ({
             ...styles,
-            color: appliedStyle.color,
+            color: isDisabled ? disabledColor : color,
             fontSize: '16px',
             fontWeight: '700',
             margin: 0,
           }),
-          singleValue: (styles) => ({
+          singleValue: (styles, { isDisabled }) => ({
             ...styles,
-            color: appliedStyle.color,
+            color: isDisabled ? disabledColor : color,
             fontSize: '16px',
             fontWeight: '700',
             margin: 0,
@@ -198,33 +241,39 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             setTimeout(() => setMenuPlacementInternal(placement), 0);
             return {
               ...styles,
-              backgroundColor: appliedStyle.backgroundColor,
-              border: `1px solid ${appliedStyle.color}`,
+              backgroundColor: backgroundColor,
+              border: `1px solid ${color}`,
               borderTopLeftRadius: placement === 'top' ? '12px' : '0',
               borderTopRightRadius: placement === 'top' ? '12px' : '0',
               borderBottomLeftRadius: placement === 'top' ? '0' : '12px',
               borderBottomRightRadius: placement === 'top' ? '0' : '12px',
-              maxWidth: appliedStyle.width,
-              margin: '0',
+              maxWidth: width,
+              margin: 0,
+              //padding: 0,
             };
           },
           menuList: (styles) => ({
             ...styles,
+            //margin: 0,
             padding: 0,
+          }),
+          groupHeading: (styles) => ({
+            ...styles,
+            color: color,
           }),
           group: (styles) => ({
             ...styles,
-            borderBottom: `1px solid ${appliedStyle.color}`,
+            borderBottom: `1px solid ${color}`,
             ':last-of-type': {
               borderBottom: 0,
             },
           }),
-          option: (styles, { isSelected }) => {
+          option: (styles, { isSelected, isDisabled }) => {
             return {
               ...styles,
               backgroundColor: 'transparent',
-              color: isSelected ? appliedStyle.selectedColor : appliedStyle.color,
-              cursor: 'pointer',
+              color: isSelected ? selectedItemColor : isDisabled ? disabledItemColor : color,
+              cursor: isDisabled ? 'default' : 'pointer',
               ':active': {
                 ...styles[':active'],
                 backgroundColor: 'transparent',
@@ -234,7 +283,7 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
               fontWeight: '700',
               margin: '0 6px',
               padding: '2px 6px',
-              borderBottom: `1px solid ${appliedStyle.color}`,
+              borderBottom: `1px solid ${color}`,
               ':last-of-type': {
                 borderBottom: 0,
               },
@@ -249,42 +298,44 @@ const Select = forwardRef<SelectInstance<Option>, Props>(
             ...styles,
             height: '22px',
           }),
-          dropdownIndicator: (styles) => ({
+          dropdownIndicator: (styles, { isDisabled }) => ({
             ...styles,
-            color: appliedStyle.color,
+            color: isDisabled ? disabledColor : color,
             padding: '2px 8px 0 0',
-            paddingRight: appliedStyle.layoutType === 'line' ? '0' : undefined,
+            paddingRight: layoutType === 'line' ? '0' : undefined,
             ':hover': {
               ...styles[':hover'],
-              color: appliedStyle.color,
+              color: isDisabled ? disabledColor : color,
             },
           }),
           clearIndicator: (styles) => ({
             ...styles,
-            color: appliedStyle.color,
+            color: color,
             padding: '0 4px 0 0',
             ':hover': {
               ...styles[':hover'],
-              color: appliedStyle.color,
+              color: color,
             },
           }),
         }}
         value={getValue(options, value)}
         defaultValue={getValue(options, defaultValue)}
-        onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
+        onChange={debounceWait ? debounce(appliedOnChange, debounceWait) : appliedOnChange}
+        onBlur={onBlur}
         required={required}
         isDisabled={disabled}
         options={options}
         isMulti={isMulti}
+        isSearchable={isSearchable}
         controlShouldRenderValue={!isMulti}
         hideSelectedOptions={false}
         closeMenuOnSelect={!isMulti}
         menuPlacement={menuPlacement}
-        isSearchable={false} //TODO search
+        isClearable={true}
       />
     );
   },
 );
 Select.displayName = 'select';
 
-export { Select, Props as SelectProps };
+export { Select, type SelectProps };

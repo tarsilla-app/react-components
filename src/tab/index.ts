@@ -1,1 +1,1 @@
-export { TabWrapper } from './Tab';
+export * from './Tab.jsx';

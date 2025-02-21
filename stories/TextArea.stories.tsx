@@ -5,7 +5,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { TextArea } from '../src/textarea';
+import { TextArea } from '../src/textarea/index.js';
 
 const meta: Meta<typeof TextArea> = {
   title: 'TextArea',
@@ -65,6 +65,22 @@ const meta: Meta<typeof TextArea> = {
       },
       description: 'set background color',
     },
+    disabledColor: {
+      control: 'color',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'gray' },
+      },
+      description: 'set disabled color',
+    },
+    disabledBackgroundColor: {
+      control: 'color',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'rgba(128, 128, 128, 0.2)' },
+      },
+      description: 'set disabled background color',
+    },
     width: {
       control: 'text',
       table: {
@@ -95,11 +111,12 @@ const meta: Meta<typeof TextArea> = {
       description: 'if true, make select required',
     },
     disabled: {
-      control: 'boolean',
+      control: false,
       table: {
         type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
-      description: 'if true, make select disabled',
+      description: 'if true, make text disabled',
     },
     debounceWait: {
       control: 'number',
@@ -143,10 +160,10 @@ const meta: Meta<typeof TextArea> = {
   },
   decorators: [
     (Story: any, { args }: any): JSX.Element => {
-      const { layoutType, color, backgroundColor, width, ...rest } = args;
+      const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, ...rest } = args;
       const updatedArgs = {
         ...rest,
-        style: { layoutType, color, backgroundColor, width },
+        style: { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width },
       };
       return <Story args={updatedArgs} />;
     },
@@ -163,10 +180,30 @@ export const Default: Story = {
     // @ts-ignore
     layoutType: 'rounded',
     color: 'black',
-    backgroundColor: 'inherit',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
     width: '250px',
     required: false,
     disabled: false,
+    debounceWait: 10,
+    rows: 5,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    id: 'id-123',
+    placeholder: 'Placeholder',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    width: '250px',
+    required: false,
+    disabled: true,
     debounceWait: 10,
     rows: 5,
   },

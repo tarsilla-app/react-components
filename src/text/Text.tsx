@@ -7,6 +7,8 @@ type ContainerProps = {
   layoutType: string;
   color: string;
   backgroundColor: string;
+  disabledColor: string;
+  disabledBackgroundColor: string;
   width: string;
 };
 
@@ -40,9 +42,26 @@ const Container = styled.input<ContainerProps>`
   :focus-visible {
     outline: none;
   }
+
+  :disabled {
+    color: ${({ disabledColor }) => `${disabledColor}`};
+    background-color: ${({ disabledBackgroundColor }) => `${disabledBackgroundColor}`};
+
+    border: ${({ layoutType, disabledColor }) => `${layoutType === 'line' ? 0 : `1px solid ${disabledColor}`}`};
+    border-bottom: ${({ layoutType, disabledColor }) =>
+      `${layoutType === 'line' ? `1px solid ${disabledColor}` : undefined}`};
+
+    ::placeholder,
+    ::-webkit-input-placeholder {
+      color: ${({ disabledColor }) => `${disabledColor}`};
+    }
+    :-ms-input-placeholder {
+      color: ${({ disabledColor }) => `${disabledColor}`};
+    }
+  }
 `;
 
-type Props = {
+type TextProps = {
   id?: string;
   placeholder?: string;
   type?: 'text' | 'number' | 'email' | 'password' | 'tel';
@@ -50,6 +69,8 @@ type Props = {
     layoutType?: 'line' | 'rounded';
     color?: string;
     backgroundColor?: string;
+    disabledColor?: string;
+    disabledBackgroundColor?: string;
     width?: string;
   };
   value?: string;
@@ -66,19 +87,20 @@ type Props = {
   debounceWait?: number;
 };
 
-const defaultStyle = {
-  layoutType: 'rounded',
-  color: 'black',
-  backgroundColor: 'inherit',
-  width: 'inherit',
-};
-const Text = forwardRef<HTMLInputElement, Props>(
+const Text = forwardRef<HTMLInputElement, TextProps>(
   (
     {
       id,
       placeholder = undefined,
       type = 'text',
-      style,
+      style: {
+        layoutType = 'rounded',
+        color = 'black',
+        backgroundColor = 'white',
+        disabledColor = 'gray',
+        disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+        width = 'inherit',
+      } = {},
       value,
       defaultValue,
       onChange,
@@ -94,15 +116,18 @@ const Text = forwardRef<HTMLInputElement, Props>(
     },
     ref,
   ) => {
-    const appliedStyle = { ...defaultStyle, ...style };
-    //TODO disabled colors
     return (
       <Container
         ref={ref}
         id={id}
         placeholder={placeholder}
         type={type}
-        {...appliedStyle}
+        layoutType={layoutType}
+        color={color}
+        backgroundColor={backgroundColor}
+        disabledColor={disabledColor}
+        disabledBackgroundColor={disabledBackgroundColor}
+        width={width}
         value={value}
         defaultValue={defaultValue}
         onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
@@ -120,4 +145,4 @@ const Text = forwardRef<HTMLInputElement, Props>(
 );
 Text.displayName = 'text';
 
-export { Text, Props as TextProps };
+export { Text, type TextProps };

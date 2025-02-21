@@ -1,6 +1,6 @@
-import { react } from '@tarsilla/eslint-config';
+import { eslintReactConfig } from '@tarsilla/eslint-config';
 
-const config = react({
-  ignores: ['**/.vscode/', '**/node_modules/', '**/lib/', '**/storybook-static/'],
+const config = eslintReactConfig({
+  ignores: ['**/.vscode/', '**/node_modules/', '**/lib/', '**/.storybook/', '**/storybook-static/'],
 });
 export default config;

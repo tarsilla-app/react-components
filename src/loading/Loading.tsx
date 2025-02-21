@@ -24,13 +24,13 @@ const Container = styled.div<ContainerProps>`
   margin: auto;
 `;
 
-type Props = {
+type LoadingProps = {
   id?: string;
   color?: string;
 };
 
-function Loading({ id, color = 'black' }: Props): JSX.Element {
+function Loading({ id, color = 'black' }: LoadingProps): JSX.Element {
   return <Container id={id} color={color} />;
 }
 
-export { Loading };
+export { Loading, type LoadingProps };

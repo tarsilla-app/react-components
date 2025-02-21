@@ -5,7 +5,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { Select } from '../src/select';
+import { Select } from '../src/select/index.js';
 
 const meta: Meta<typeof Select> = {
   title: 'Select',
@@ -15,7 +15,7 @@ const meta: Meta<typeof Select> = {
     docs: {
       story: {
         inline: false,
-        iframeHeight: 150,
+        iframeHeight: 350,
         iframeWidth: 400,
       },
     },
@@ -37,6 +37,14 @@ const meta: Meta<typeof Select> = {
         defaultValue: { summary: 'Select' },
       },
       description: 'placeholder',
+    },
+    noOptionsMessage: {
+      control: 'text',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'No options' },
+      },
+      description: 'no options message',
     },
     style: {
       control: 'object',
@@ -64,21 +72,45 @@ const meta: Meta<typeof Select> = {
       },
       description: 'set color',
     },
-    selectedColor: {
+    backgroundColor: {
+      control: 'color',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'white' },
+      },
+      description: 'set background color',
+    },
+    disabledColor: {
       control: 'color',
       table: {
         type: { summary: 'text' },
         defaultValue: { summary: 'gray' },
       },
-      description: 'set selected item color',
+      description: 'set disabled color',
     },
-    backgroundColor: {
+    disabledBackgroundColor: {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'inherit' },
+        defaultValue: { summary: 'rgba(128, 128, 128, 0.2)' },
       },
-      description: 'set background color',
+      description: 'set disabled background color',
+    },
+    selectedItemColor: {
+      control: 'color',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'blue' },
+      },
+      description: 'set selected item color',
+    },
+    disabledItemColor: {
+      control: 'color',
+      table: {
+        type: { summary: 'text' },
+        defaultValue: { summary: 'gray' },
+      },
+      description: 'set disabled item color',
     },
     width: {
       control: 'text',
@@ -96,9 +128,10 @@ const meta: Meta<typeof Select> = {
       description: 'if true, make select required',
     },
     disabled: {
-      control: 'boolean',
+      control: false,
       table: {
         type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
       description: 'if true, make select disabled',
     },
@@ -115,6 +148,14 @@ const meta: Meta<typeof Select> = {
         defaultValue: { summary: 'false' },
       },
       description: 'if true, select is multi',
+    },
+    isSearchable: {
+      control: false,
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+      description: 'if true, select is searchable',
     },
     menuPlacement: {
       control: 'select',
@@ -147,29 +188,38 @@ const meta: Meta<typeof Select> = {
         type: { summary: 'text' },
         defaultValue: { summary: 'undefined' },
       },
-      options: ['1', '2'],
+      options: ['1', '2', '3', '4'],
       description: 'default value',
     },
   },
   args: {
     onChange: fn(),
-    options: [
-      {
-        label: 'option 1',
-        value: '1',
-      },
-      {
-        label: 'option 2',
-        value: '2',
-      },
-    ],
   },
   decorators: [
     (Story: any, { args }: any): JSX.Element => {
-      const { layoutType, color, selectedColor, backgroundColor, width, ...rest } = args;
+      const {
+        layoutType,
+        color,
+        backgroundColor,
+        disabledColor,
+        disabledBackgroundColor,
+        selectedItemColor,
+        disabledItemColor,
+        width,
+        ...rest
+      } = args;
       const updatedArgs = {
         ...rest,
-        style: { layoutType, color, selectedColor, backgroundColor, width },
+        style: {
+          layoutType,
+          color,
+          backgroundColor,
+          disabledColor,
+          disabledBackgroundColor,
+          selectedItemColor,
+          disabledItemColor,
+          width,
+        },
       };
       return <Story args={updatedArgs} />;
     },
@@ -182,19 +232,249 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     id: 'id-123',
-    placeholder: 'Select',
+    options: [
+      {
+        label: 'option 1',
+        value: '1',
+      },
+      {
+        label: 'option 2',
+        value: '2',
+        isDisabled: true,
+      },
+      {
+        label: 'Group',
+        options: [
+          {
+            label: 'option 3',
+            value: '3',
+          },
+          {
+            label: 'option 4',
+            value: '4',
+            isDisabled: true,
+          },
+        ],
+      },
+    ],
+    placeholder: 'Selecione',
+    noOptionsMessage: 'Não encontrado',
     // @ts-ignore
     layoutType: 'rounded',
     color: 'black',
-    selectedColor: 'gray',
-    backgroundColor: 'inherit',
-    width: '100px',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    selectedItemColor: 'blue',
+    disabledItemColor: 'gray',
+    width: '120px',
     required: false,
     disabled: false,
     debounceWait: 10,
     isMulti: false,
+    isSearchable: false,
     menuPlacement: 'bottom',
     defaultValue: '1',
+    value: undefined,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    id: 'id-123',
+    placeholder: 'Selecione',
+    noOptionsMessage: 'Não encontrado',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    selectedItemColor: 'blue',
+    disabledItemColor: 'gray',
+    width: '120px',
+    required: false,
+    disabled: true,
+    debounceWait: 10,
+    isMulti: false,
+    isSearchable: false,
+    menuPlacement: 'bottom',
+    defaultValue: undefined,
+    value: undefined,
+  },
+};
+
+export const Searchable: Story = {
+  args: {
+    id: 'id-123',
+    options: [
+      {
+        label: 'option 1',
+        value: '1',
+      },
+      {
+        label: 'option 2',
+        value: '2',
+        isDisabled: true,
+      },
+      {
+        label: 'Group',
+        options: [
+          {
+            label: 'option 3',
+            value: '3',
+          },
+          {
+            label: 'option 4',
+            value: '4',
+            isDisabled: true,
+          },
+        ],
+      },
+    ],
+    placeholder: 'Selecione',
+    noOptionsMessage: 'Não encontrado',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    selectedItemColor: 'blue',
+    disabledItemColor: 'gray',
+    width: '120px',
+    required: false,
+    disabled: false,
+    debounceWait: 10,
+    isMulti: false,
+    isSearchable: true,
+    menuPlacement: 'bottom',
+    defaultValue: undefined,
+    value: undefined,
+  },
+};
+
+export const MultiSelect: Story = {
+  args: {
+    id: 'id-123',
+    options: [
+      {
+        label: 'option 1',
+        value: '1',
+      },
+      {
+        label: 'option 2',
+        value: '2',
+        isDisabled: true,
+      },
+      {
+        label: 'Group',
+        options: [
+          {
+            label: 'option 3',
+            value: '3',
+          },
+          {
+            label: 'option 4',
+            value: '4',
+            isDisabled: true,
+          },
+        ],
+      },
+    ],
+    placeholder: 'Selecione',
+    noOptionsMessage: 'Não encontrado',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    selectedItemColor: 'blue',
+    disabledItemColor: 'gray',
+    width: '120px',
+    required: false,
+    disabled: false,
+    debounceWait: 10,
+    isMulti: true,
+    isSearchable: false,
+    menuPlacement: 'bottom',
+    defaultValue: ['1', '3'],
+    value: undefined,
+  },
+};
+
+export const MultiSelectDisabled: Story = {
+  args: {
+    id: 'id-123',
+    placeholder: 'Selecione',
+    noOptionsMessage: 'Não encontrado',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    selectedItemColor: 'blue',
+    disabledItemColor: 'gray',
+    width: '120px',
+    required: false,
+    disabled: true,
+    debounceWait: 10,
+    isMulti: true,
+    isSearchable: false,
+    menuPlacement: 'bottom',
+    defaultValue: undefined,
+    value: undefined,
+  },
+};
+
+export const MultiSelectSearchable: Story = {
+  args: {
+    id: 'id-123',
+    options: [
+      {
+        label: 'option 1',
+        value: '1',
+      },
+      {
+        label: 'option 2',
+        value: '2',
+        isDisabled: true,
+      },
+      {
+        label: 'Group',
+        options: [
+          {
+            label: 'option 3',
+            value: '3',
+          },
+          {
+            label: 'option 4',
+            value: '4',
+            isDisabled: true,
+          },
+        ],
+      },
+    ],
+    placeholder: 'Selecione',
+    noOptionsMessage: 'Não encontrado',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    selectedItemColor: 'blue',
+    disabledItemColor: 'gray',
+    width: '120px',
+    required: false,
+    disabled: false,
+    debounceWait: 10,
+    isMulti: true,
+    isSearchable: true,
+    menuPlacement: 'bottom',
+    defaultValue: undefined,
     value: undefined,
   },
 };

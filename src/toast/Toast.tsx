@@ -1,8 +1,9 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useState } from 'react';
 
 import styled from '@emotion/styled';
 import { Id, toast, ToastContainer, ToastItem } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   position: absolute;

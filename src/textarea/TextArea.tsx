@@ -7,6 +7,8 @@ type ContainerProps = {
   layoutType: string;
   color: string;
   backgroundColor: string;
+  disabledColor: string;
+  disabledBackgroundColor: string;
   width: string;
 };
 
@@ -40,15 +42,34 @@ const Container = styled.textarea<ContainerProps>`
   :focus-visible {
     outline: none;
   }
+
+  :disabled {
+    color: ${({ disabledColor }) => `${disabledColor}`};
+    background-color: ${({ disabledBackgroundColor }) => `${disabledBackgroundColor}`};
+
+    border: ${({ layoutType, disabledColor }) => `${layoutType === 'line' ? 0 : `1px solid ${disabledColor}`}`};
+    border-bottom: ${({ layoutType, disabledColor }) =>
+      `${layoutType === 'line' ? `1px solid ${disabledColor}` : undefined}`};
+
+    ::placeholder,
+    ::-webkit-input-placeholder {
+      color: ${({ disabledColor }) => `${disabledColor}`};
+    }
+    :-ms-input-placeholder {
+      color: ${({ disabledColor }) => `${disabledColor}`};
+    }
+  }
 `;
 
-type Props = {
+type TextAreaProps = {
   id?: string;
   placeholder?: string;
   style?: {
     layoutType?: 'line' | 'rounded';
     color?: string;
     backgroundColor?: string;
+    disabledColor: string;
+    disabledBackgroundColor: string;
     width?: string;
   };
   value?: string;
@@ -64,18 +85,19 @@ type Props = {
   rows?: number;
 };
 
-const defaultStyle = {
-  layoutType: 'rounded',
-  color: 'black',
-  backgroundColor: 'inherit',
-  width: 'inherit',
-};
-const TextArea = forwardRef<HTMLTextAreaElement, Props>(
+const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
       id,
       placeholder = undefined,
-      style,
+      style: {
+        layoutType = 'rounded',
+        color = 'black',
+        backgroundColor = 'white',
+        disabledColor = 'gray',
+        disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+        width = 'inherit',
+      } = {},
       value,
       defaultValue,
       onChange,
@@ -89,14 +111,17 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
     },
     ref,
   ) => {
-    const appliedStyle = { ...defaultStyle, ...style };
-    //TODO disabled colors
     return (
       <Container
         ref={ref}
         id={id}
         placeholder={placeholder}
-        {...appliedStyle}
+        layoutType={layoutType}
+        color={color}
+        backgroundColor={backgroundColor}
+        disabledColor={disabledColor}
+        disabledBackgroundColor={disabledBackgroundColor}
+        width={width}
         value={value}
         defaultValue={defaultValue}
         onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
@@ -113,4 +138,4 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
 );
 TextArea.displayName = 'textarea';
 
-export { TextArea, Props as TextAreaProps };
+export { TextArea, type TextAreaProps };
