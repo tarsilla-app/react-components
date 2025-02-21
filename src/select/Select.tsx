@@ -3,6 +3,7 @@ import { FocusEventHandler, forwardRef, useState } from 'react';
 import debounce from 'debounce';
 import { FaAngleDown, FaAngleUp, FaXmark } from 'react-icons/fa6';
 import ReactSelect, {
+  ActionMeta,
   ClearIndicatorProps,
   CoercedMenuPlacement,
   components,
@@ -62,7 +63,7 @@ function getValue(options?: Option[], value?: string | string[]): SingleOption |
   return undefined;
 }
 
-function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): string | string[] | undefined {
+function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): OnChangeValue<string, IsMulti> {
   if (newValues) {
     if (Array.isArray(newValues)) {
       //multiple
@@ -86,7 +87,7 @@ function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): string | 
       }
     }
   }
-  return undefined;
+  return null;
 }
 
 function DropdownIndicator(props: DropdownIndicatorProps<Option>) {
@@ -129,7 +130,7 @@ type SelectProps<Option> = {
   };
   value?: string | string[];
   defaultValue?: string | string[];
-  onChange: (value?: string | string[]) => void;
+  onChange: (newValue: OnChangeValue<string, IsMulti>, actionMeta: ActionMeta<Option>) => void;
   onBlur?: FocusEventHandler<HTMLInputElement>;
   required?: boolean;
   disabled?: boolean;
@@ -174,8 +175,8 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
       menuPlacement === 'auto' ? 'bottom' : menuPlacement,
     );
 
-    function appliedOnChange(newValue: OnChangeValue<Option, IsMulti>) {
-      onChange(getOnChangeValue(newValue));
+    function appliedOnChange(newValue: OnChangeValue<Option, IsMulti>, actionMeta: ActionMeta<Option>) {
+      onChange(getOnChangeValue(newValue), actionMeta);
     }
     return (
       <ReactSelect
