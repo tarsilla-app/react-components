@@ -65,7 +65,8 @@
     "prepub": "npm run build",
     "pub": "npm publish --access public",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "@types/react": "^18",
@@ -75,15 +76,25 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.4",
-    "@storybook/addon-essentials": "^8.5.8",
-    "@storybook/addon-interactions": "^8.5.8",
-    "@storybook/blocks": "^8.5.8",
-    "@storybook/react": "^8.5.8",
-    "@storybook/react-vite": "^8.5.8",
-    "@storybook/test": "^8.5.8",
-    "@tarsilla/eslint-config": "^0.0.43",
-    "@tarsilla/rollup-config": "^0.0.5",
-    "storybook": "^8.5.8",
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.3",
+    "@storybook/addon-essentials": "^8.6.0",
+    "@storybook/addon-interactions": "^8.6.0",
+    "@storybook/blocks": "^8.6.0",
+    "@storybook/react": "^8.6.0",
+    "@storybook/react-vite": "^8.6.0",
+    "@storybook/test": "^8.6.0",
+    "@tarsilla/eslint-config": "^0.0.60",
+    "@tarsilla/rollup-config": "^0.0.7",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
+    "semantic-release": "^24.2.3",
+    "storybook": "^8.6.0",
     "typescript": "^5.7.3"
   },
   "dependencies": {
@@ -95,6 +106,6 @@
     "react-icons": "^5.5.0",
     "react-select": "^5.10.0",
     "react-tabs": "^6.1.0",
-    "react-toastify": "^11.0.3"
+    "react-toastify": "^11.0.5"
   }
 }
