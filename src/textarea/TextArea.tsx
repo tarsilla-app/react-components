@@ -44,6 +44,7 @@ const Container = styled.textarea<ContainerProps>`
   }
 
   :disabled {
+    cursor: not-allowed;
     color: ${({ disabledColor }) => `${disabledColor}`};
     background-color: ${({ disabledBackgroundColor }) => `${disabledBackgroundColor}`};
 

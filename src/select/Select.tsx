@@ -202,7 +202,8 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
                 (!menuIsOpen || menuPlacementInternal === 'top') && layoutType === 'rounded' ? '12px' : '0',
               width: width,
               boxShadow: 'none',
-              cursor: 'pointer',
+              pointerEvents: 'auto',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
               ':hover': {
                 ...styles[':hover'],
                 borderColor: isDisabled ? disabledColor : color,
@@ -274,7 +275,7 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
               ...styles,
               backgroundColor: 'transparent',
               color: isSelected ? selectedItemColor : isDisabled ? disabledItemColor : color,
-              cursor: isDisabled ? 'default' : 'pointer',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
               ':active': {
                 ...styles[':active'],
                 backgroundColor: 'transparent',

@@ -44,6 +44,7 @@ const Container = styled.input<ContainerProps>`
   }
 
   :disabled {
+    cursor: not-allowed;
     color: ${({ disabledColor }) => `${disabledColor}`};
     background-color: ${({ disabledBackgroundColor }) => `${disabledBackgroundColor}`};
 
