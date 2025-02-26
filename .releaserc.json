@@ -1,6 +1,6 @@
 {
   "branches": ["main"],
-  "repositoryUrl": "https://github.com/tarsilla-app/rollup-config",
+  "repositoryUrl": "https://github.com/tarsilla-app/react-components",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
