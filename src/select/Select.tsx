@@ -63,7 +63,7 @@ function getValue(options?: Option[], value?: string | string[]): SingleOption |
   return undefined;
 }
 
-function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): OnChangeValue<string, IsMulti> {
+function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): string | string[] | undefined {
   if (newValues) {
     if (Array.isArray(newValues)) {
       //multiple
@@ -87,7 +87,7 @@ function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): OnChangeV
       }
     }
   }
-  return null;
+  return undefined;
 }
 
 function DropdownIndicator(props: DropdownIndicatorProps<Option>) {
@@ -130,7 +130,7 @@ type SelectProps<Option> = {
   };
   value?: string | string[];
   defaultValue?: string | string[];
-  onChange: (newValue: OnChangeValue<string, IsMulti>, actionMeta: ActionMeta<Option>) => void;
+  onChange: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => void;
   onBlur?: FocusEventHandler<HTMLInputElement>;
   required?: boolean;
   disabled?: boolean;
