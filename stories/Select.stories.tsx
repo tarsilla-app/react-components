@@ -210,7 +210,6 @@ const meta: Meta<typeof Select> = {
         disabledItemColor,
         width,
         value,
-        onChange,
         ...rest
       } = args;
       const [_value, _setValue] = useState(value);
@@ -229,8 +228,7 @@ const meta: Meta<typeof Select> = {
         value: _value,
         onChange: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => {
           _setValue(value);
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          onChange?.(value, actionMeta);
+          console.log('onChange', value, actionMeta);
         },
       };
       return <Story args={updatedArgs} />;
@@ -242,6 +240,56 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  args: {
+    id: 'id-123',
+    options: [
+      {
+        label: 'option 1',
+        value: '1',
+      },
+      {
+        label: 'option 2',
+        value: '2',
+        isDisabled: true,
+      },
+      {
+        label: 'Group',
+        options: [
+          {
+            label: 'option 3',
+            value: '3',
+          },
+          {
+            label: 'option 4',
+            value: '4',
+            isDisabled: true,
+          },
+        ],
+      },
+    ],
+    placeholder: 'Selecione',
+    noOptionsMessage: 'Não encontrado',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    selectedItemColor: 'blue',
+    disabledItemColor: 'gray',
+    width: '120px',
+    required: false,
+    disabled: false,
+    debounceWait: undefined,
+    isMulti: false,
+    isSearchable: false,
+    menuPlacement: 'bottom',
+    defaultValue: '1',
+    value: undefined,
+  },
+};
+
+export const Debounce: Story = {
   args: {
     id: 'id-123',
     options: [
@@ -307,7 +355,7 @@ export const Disabled: Story = {
     width: '120px',
     required: false,
     disabled: true,
-    debounceWait: 10,
+    debounceWait: undefined,
     isMulti: false,
     isSearchable: false,
     menuPlacement: 'bottom',
@@ -357,7 +405,7 @@ export const Searchable: Story = {
     width: '120px',
     required: false,
     disabled: false,
-    debounceWait: 10,
+    debounceWait: undefined,
     isMulti: false,
     isSearchable: true,
     menuPlacement: 'bottom',
@@ -407,7 +455,7 @@ export const MultiSelect: Story = {
     width: '120px',
     required: false,
     disabled: false,
-    debounceWait: 10,
+    debounceWait: undefined,
     isMulti: true,
     isSearchable: false,
     menuPlacement: 'bottom',
@@ -432,7 +480,7 @@ export const MultiSelectDisabled: Story = {
     width: '120px',
     required: false,
     disabled: true,
-    debounceWait: 10,
+    debounceWait: undefined,
     isMulti: true,
     isSearchable: false,
     menuPlacement: 'bottom',
@@ -482,7 +530,7 @@ export const MultiSelectSearchable: Story = {
     width: '120px',
     required: false,
     disabled: false,
-    debounceWait: 10,
+    debounceWait: undefined,
     isMulti: true,
     isSearchable: true,
     menuPlacement: 'bottom',

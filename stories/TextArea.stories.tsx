@@ -162,17 +162,8 @@ const meta: Meta<typeof TextArea> = {
   },
   decorators: [
     (Story: any, { args }: any): JSX.Element => {
-      const {
-        layoutType,
-        color,
-        backgroundColor,
-        disabledColor,
-        disabledBackgroundColor,
-        width,
-        value,
-        onChange,
-        ...rest
-      } = args;
+      const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, value, ...rest } =
+        args;
       const [_value, _setValue] = useState(value);
       const updatedArgs = {
         ...rest,
@@ -180,8 +171,7 @@ const meta: Meta<typeof TextArea> = {
         value: _value,
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
           _setValue(e.target.value);
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          onChange?.(e);
+          console.log('onChange', e.target.value);
         },
       };
       return <Story args={updatedArgs} />;
@@ -193,6 +183,24 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  args: {
+    id: 'id-123',
+    placeholder: 'Placeholder',
+    // @ts-ignore
+    layoutType: 'rounded',
+    color: 'black',
+    backgroundColor: 'white',
+    disabledColor: 'gray',
+    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
+    width: '250px',
+    required: false,
+    disabled: false,
+    debounceWait: undefined,
+    rows: 5,
+  },
+};
+
+export const Debounce: Story = {
   args: {
     id: 'id-123',
     placeholder: 'Placeholder',
@@ -223,7 +231,7 @@ export const Disabled: Story = {
     width: '250px',
     required: false,
     disabled: true,
-    debounceWait: 10,
+    debounceWait: undefined,
     rows: 5,
   },
 };
