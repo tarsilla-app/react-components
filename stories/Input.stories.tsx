@@ -5,11 +5,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { Text } from '../src/text/index.js';
+import { Input } from '../src/input/index.js';
 
-const meta: Meta<typeof Text> = {
-  title: 'Text',
-  component: Text,
+const meta: Meta<typeof Input> = {
+  title: 'Input',
+  component: Input,
   parameters: {
     layout: 'centered',
   },

@@ -15,6 +15,12 @@
       "import": "./lib/index.mjs",
       "default": "./lib/index.mjs"
     },
+    "./text": {
+      "types": "./lib/input/index.d.ts",
+      "require": "./lib/input/index.cjs",
+      "import": "./lib/input/index.mjs",
+      "default": "./lib/input/index.mjs"
+    },
     "./label": {
       "types": "./lib/label/index.d.ts",
       "require": "./lib/label/index.cjs",
@@ -38,12 +44,6 @@
       "require": "./lib/tab/index.cjs",
       "import": "./lib/tab/index.mjs",
       "default": "./lib/tab/index.mjs"
-    },
-    "./text": {
-      "types": "./lib/text/index.d.ts",
-      "require": "./lib/text/index.cjs",
-      "import": "./lib/text/index.mjs",
-      "default": "./lib/text/index.mjs"
     },
     "./textarea": {
       "types": "./lib/textarea/index.d.ts",

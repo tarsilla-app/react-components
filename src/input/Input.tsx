@@ -62,7 +62,7 @@ const Container = styled.input<ContainerProps>`
   }
 `;
 
-type TextProps = {
+type InputProps = {
   id?: string;
   placeholder?: string;
   type?: 'text' | 'number' | 'email' | 'password' | 'tel';
@@ -88,7 +88,7 @@ type TextProps = {
   debounceWait?: number;
 };
 
-const Text = forwardRef<HTMLInputElement, TextProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       id,
@@ -144,6 +144,6 @@ const Text = forwardRef<HTMLInputElement, TextProps>(
     );
   },
 );
-Text.displayName = 'text';
+Input.displayName = 'input';
 
-export { Text, type TextProps };
+export { Input, type InputProps };
