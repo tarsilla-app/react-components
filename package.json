@@ -1,6 +1,9 @@
 {
   "name": "@tarsilla/react-components",
   "version": "0.0.18",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=22"
   },
@@ -11,6 +14,12 @@
       "require": "./lib/index.cjs",
       "import": "./lib/index.mjs",
       "default": "./lib/index.mjs"
+    },
+    "./label": {
+      "types": "./lib/label/index.d.ts",
+      "require": "./lib/label/index.cjs",
+      "import": "./lib/label/index.mjs",
+      "default": "./lib/label/index.mjs"
     },
     "./loading": {
       "types": "./lib/loading/index.d.ts",
@@ -81,7 +90,7 @@
     "debounce": "^2.2.0",
     "react-hook-form": "^7.54.2",
     "react-icons": "^5.5.0",
-    "react-select": "^5.10.0",
+    "react-select": "^5.10.1",
     "react-tabs": "^6.1.0",
     "react-toastify": "^11.0.5"
   },
@@ -94,18 +103,18 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/release-notes-generator": "^14.0.3",
-    "@storybook/addon-essentials": "^8.6.2",
-    "@storybook/addon-interactions": "^8.6.2",
-    "@storybook/blocks": "^8.6.2",
-    "@storybook/react": "^8.6.2",
-    "@storybook/react-vite": "^8.6.2",
-    "@storybook/test": "^8.6.2",
+    "@storybook/addon-essentials": "^8.6.3",
+    "@storybook/addon-interactions": "^8.6.3",
+    "@storybook/blocks": "^8.6.3",
+    "@storybook/react": "^8.6.3",
+    "@storybook/react-vite": "^8.6.3",
+    "@storybook/test": "^8.6.3",
     "@tarsilla/eslint-config": "^0.0.60",
-    "@tarsilla/rollup-config": "^0.0.7",
+    "@tarsilla/rollup-config": "^0.0.8",
     "cz-conventional-changelog": "^3.3.0",
     "husky": "^9.1.7",
     "semantic-release": "^24.2.3",
-    "storybook": "^8.6.2",
-    "typescript": "^5.7.3"
+    "storybook": "^8.6.3",
+    "typescript": "^5.8.2"
   }
 }

@@ -1,3 +1,4 @@
+export * from './label/index.js';
 export * from './loading/index.js';
 export * from './select/index.js';
 export * from './tab/index.js';
