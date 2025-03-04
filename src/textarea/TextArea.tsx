@@ -75,7 +75,7 @@ type TextAreaProps = {
   };
   value?: string;
   defaultValue?: string;
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   onBlur?: FocusEventHandler<HTMLTextAreaElement>;
   maxLength?: number;
   minLength?: number;
@@ -125,7 +125,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         width={width}
         value={value}
         defaultValue={defaultValue}
-        onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
+        onChange={debounceWait && onChange ? debounce(onChange, debounceWait) : onChange}
         onBlur={onBlur}
         minLength={minLength}
         maxLength={maxLength}

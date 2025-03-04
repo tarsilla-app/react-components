@@ -130,7 +130,7 @@ type SelectProps<Option> = {
   };
   value?: string | string[];
   defaultValue?: string | string[];
-  onChange: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => void;
+  onChange?: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => void;
   onBlur?: FocusEventHandler<HTMLInputElement>;
   required?: boolean;
   disabled?: boolean;
@@ -176,7 +176,7 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
     );
 
     function appliedOnChange(newValue: OnChangeValue<Option, IsMulti>, actionMeta: ActionMeta<Option>) {
-      onChange(getOnChangeValue(newValue), actionMeta);
+      onChange?.(getOnChangeValue(newValue), actionMeta);
     }
     return (
       <ReactSelect

@@ -76,7 +76,7 @@ type InputProps = {
   };
   value?: string;
   defaultValue?: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   onBlur?: FocusEventHandler<HTMLInputElement>;
   min?: number;
   max?: number;
@@ -131,7 +131,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         width={width}
         value={value}
         defaultValue={defaultValue}
-        onChange={debounceWait ? debounce(onChange, debounceWait) : onChange}
+        onChange={debounceWait && onChange ? debounce(onChange, debounceWait) : onChange}
         onBlur={onBlur}
         min={min}
         max={max}
