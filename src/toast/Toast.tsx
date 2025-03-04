@@ -20,11 +20,11 @@ const Container = styled.div`
   z-index: 2;
 `;
 
-type ToastProps = {
+type LoadingProps = {
   loading: Id[];
 };
 
-function Loading({ loading }: ToastProps) {
+function Loading({ loading }: LoadingProps) {
   return loading.length > 0 ? <Container /> : undefined;
 }
 

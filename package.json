@@ -15,7 +15,7 @@
       "import": "./lib/index.mjs",
       "default": "./lib/index.mjs"
     },
-    "./text": {
+    "./input": {
       "types": "./lib/input/index.d.ts",
       "require": "./lib/input/index.cjs",
       "import": "./lib/input/index.mjs",
