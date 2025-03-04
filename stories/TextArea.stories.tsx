@@ -53,7 +53,7 @@ const meta: Meta<typeof TextArea> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'black' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set color',
     },

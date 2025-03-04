@@ -62,7 +62,7 @@ const meta: Meta<typeof Input> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'black' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set color',
     },

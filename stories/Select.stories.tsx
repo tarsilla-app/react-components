@@ -68,7 +68,7 @@ const meta: Meta<typeof Select> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'black' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set color',
     },
@@ -76,7 +76,7 @@ const meta: Meta<typeof Select> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'white' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set background color',
     },

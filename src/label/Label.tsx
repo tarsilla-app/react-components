@@ -1,6 +1,14 @@
 import styled from '@emotion/styled';
 
-const Container = styled.label``;
+type ContainerProps = {
+  color: string;
+  backgroundColor: string;
+};
+
+const Container = styled.label<ContainerProps>`
+  color: ${(props) => props.color};
+  background-color: ${(props) => props.backgroundColor};
+`;
 
 type LabelProps = {
   id: string;
@@ -11,9 +19,9 @@ type LabelProps = {
   };
 };
 
-function Label({ id, value, style: { color = 'black', backgroundColor = 'white' } = {} }: LabelProps): JSX.Element {
+function Label({ id, value, style: { color = 'inherit', backgroundColor = 'inherit' } = {} }: LabelProps): JSX.Element {
   return (
-    <Container id={id} style={{ color, backgroundColor }}>
+    <Container id={id} color={color} backgroundColor={backgroundColor}>
       {value}
     </Container>
   );

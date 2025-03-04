@@ -149,8 +149,8 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
       noOptionsMessage = 'No options',
       style: {
         layoutType = 'rounded',
-        color = 'black',
-        backgroundColor = 'white',
+        color = 'inherit',
+        backgroundColor = 'inherit',
         disabledColor = 'gray',
         disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
         selectedItemColor = 'blue',

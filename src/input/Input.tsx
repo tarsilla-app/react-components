@@ -96,8 +96,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       type = 'text',
       style: {
         layoutType = 'rounded',
-        color = 'black',
-        backgroundColor = 'white',
+        color = 'inherit',
+        backgroundColor = 'inherit',
         disabledColor = 'gray',
         disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
         width = 'inherit',

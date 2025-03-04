@@ -22,7 +22,7 @@ const meta: Meta<typeof Loading> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: '#000000' },
+        defaultValue: { summary: 'black' },
       },
       description: 'set color',
     },
