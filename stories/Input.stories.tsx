@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
@@ -181,10 +183,27 @@ const meta: Meta<typeof Input> = {
   },
   decorators: [
     (Story: any, { args }: any): JSX.Element => {
-      const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, ...rest } = args;
+      const {
+        layoutType,
+        color,
+        backgroundColor,
+        disabledColor,
+        disabledBackgroundColor,
+        width,
+        value,
+        onChange,
+        ...rest
+      } = args;
+      const [_value, _setValue] = useState(value);
       const updatedArgs = {
         ...rest,
         style: { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width },
+        value: _value,
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+          _setValue(e.target.value);
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          onChange?.(e);
+        },
       };
       return <Story args={updatedArgs} />;
     },
@@ -196,6 +215,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    value: 'Hello World',
     id: 'id-123',
     type: 'text',
     placeholder: 'Placeholder',
@@ -208,7 +228,7 @@ export const Default: Story = {
     width: '150px',
     required: false,
     disabled: false,
-    debounceWait: 10,
+    debounceWait: 2000,
   },
 };
 

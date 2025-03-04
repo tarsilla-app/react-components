@@ -1,4 +1,4 @@
-import { FocusEventHandler, forwardRef, useState } from 'react';
+import { FocusEventHandler, forwardRef, useEffect, useMemo, useState } from 'react';
 
 import debounce from 'debounce';
 import { FaAngleDown, FaAngleUp, FaXmark } from 'react-icons/fa6';
@@ -175,9 +175,26 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
       menuPlacement === 'auto' ? 'bottom' : menuPlacement,
     );
 
-    function appliedOnChange(newValue: OnChangeValue<Option, IsMulti>, actionMeta: ActionMeta<Option>) {
-      onChange?.(getOnChangeValue(newValue), actionMeta);
+    const [localValue, setLocalValue] = useState(value);
+
+    useEffect(() => {
+      if (value !== undefined) {
+        setLocalValue(value);
+      }
+    }, [value]);
+
+    const debouncedOnChange = useMemo(() => {
+      function appliedOnChange(newValue: OnChangeValue<Option, IsMulti>, actionMeta: ActionMeta<Option>) {
+        onChange?.(getOnChangeValue(newValue), actionMeta);
+      }
+      return debounceWait ? debounce(appliedOnChange, debounceWait) : appliedOnChange;
+    }, [onChange, debounceWait]);
+
+    function handleChange(newValue: OnChangeValue<Option, IsMulti>, actionMeta: ActionMeta<Option>) {
+      setLocalValue(getOnChangeValue(newValue));
+      debouncedOnChange?.(newValue, actionMeta);
     }
+
     return (
       <ReactSelect
         ref={ref}
@@ -320,9 +337,9 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
             },
           }),
         }}
-        value={getValue(options, value)}
+        value={getValue(options, localValue)}
         defaultValue={getValue(options, defaultValue)}
-        onChange={debounceWait ? debounce(appliedOnChange, debounceWait) : appliedOnChange}
+        onChange={handleChange}
         onBlur={onBlur}
         required={required}
         isDisabled={disabled}

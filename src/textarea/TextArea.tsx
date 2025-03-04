@@ -1,4 +1,4 @@
-import { ChangeEventHandler, FocusEventHandler, forwardRef } from 'react';
+import { ChangeEvent, ChangeEventHandler, FocusEventHandler, forwardRef, useEffect, useMemo, useState } from 'react';
 
 import styled from '@emotion/styled';
 import debounce from 'debounce';
@@ -112,6 +112,24 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     },
     ref,
   ) => {
+    const [localValue, setLocalValue] = useState(value);
+
+    useEffect(() => {
+      if (value !== undefined) {
+        setLocalValue(value);
+      }
+    }, [value]);
+
+    const debouncedOnChange = useMemo(
+      () => (debounceWait && onChange ? debounce(onChange, debounceWait) : onChange),
+      [onChange, debounceWait],
+    );
+
+    function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+      setLocalValue(e.target.value);
+      debouncedOnChange?.(e);
+    }
+
     return (
       <Container
         ref={ref}
@@ -123,9 +141,9 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         disabledColor={disabledColor}
         disabledBackgroundColor={disabledBackgroundColor}
         width={width}
-        value={value}
+        value={localValue}
         defaultValue={defaultValue}
-        onChange={debounceWait && onChange ? debounce(onChange, debounceWait) : onChange}
+        onChange={handleChange}
         onBlur={onBlur}
         minLength={minLength}
         maxLength={maxLength}

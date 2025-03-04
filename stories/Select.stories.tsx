@@ -2,10 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
+import { ActionMeta } from 'react-select';
 
-import { Select } from '../src/select/index.js';
+import { Option, Select } from '../src/select/index.js';
 
 const meta: Meta<typeof Select> = {
   title: 'Select',
@@ -206,8 +209,11 @@ const meta: Meta<typeof Select> = {
         selectedItemColor,
         disabledItemColor,
         width,
+        value,
+        onChange,
         ...rest
       } = args;
+      const [_value, _setValue] = useState(value);
       const updatedArgs = {
         ...rest,
         style: {
@@ -219,6 +225,12 @@ const meta: Meta<typeof Select> = {
           selectedItemColor,
           disabledItemColor,
           width,
+        },
+        value: _value,
+        onChange: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => {
+          _setValue(value);
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          onChange?.(value, actionMeta);
         },
       };
       return <Story args={updatedArgs} />;
@@ -270,7 +282,7 @@ export const Default: Story = {
     width: '120px',
     required: false,
     disabled: false,
-    debounceWait: 10,
+    debounceWait: 2000,
     isMulti: false,
     isSearchable: false,
     menuPlacement: 'bottom',
