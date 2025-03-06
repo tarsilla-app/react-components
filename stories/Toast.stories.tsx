@@ -15,7 +15,7 @@ const meta: Meta<typeof Toast> = {
   argTypes: {},
   args: {},
   decorators: [
-    (Story: any, { args }: any): JSX.Element => {
+    (Story: any, { args }: any) => {
       return (
         <div>
           <button

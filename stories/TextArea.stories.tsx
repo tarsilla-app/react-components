@@ -161,7 +161,7 @@ const meta: Meta<typeof TextArea> = {
     onBlur: fn(),
   },
   decorators: [
-    (Story: any, { args }: any): JSX.Element => {
+    (Story: any, { args }: any) => {
       const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, value, ...rest } =
         args;
       const [_value, _setValue] = useState(value);

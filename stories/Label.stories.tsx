@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Label } from '../src/label/index.js';
@@ -59,7 +60,7 @@ const meta: Meta<typeof Label> = {
   },
   args: {},
   decorators: [
-    (Story: any, { args }: any): JSX.Element => {
+    (Story: any, { args }: any) => {
       const { layoutType, color, backgroundColor, ...rest } = args;
       const updatedArgs = {
         ...rest,

@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 
 import styled from '@emotion/styled';
 import { Id, toast, ToastContainer, ToastItem } from 'react-toastify';

@@ -199,7 +199,7 @@ const meta: Meta<typeof Select> = {
     onChange: fn(),
   },
   decorators: [
-    (Story: any, { args }: any): JSX.Element => {
+    (Story: any, { args }: any) => {
       const {
         layoutType,
         color,

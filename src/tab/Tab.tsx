@@ -1,6 +1,6 @@
 import 'react-tabs/style/react-tabs.css';
 
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 
 import { css } from '@emotion/css';
 import { Tab as ReactTab, TabList, TabPanel, Tabs } from 'react-tabs';

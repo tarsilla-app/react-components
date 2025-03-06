@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Tab } from '../src//index.js';
@@ -146,7 +147,7 @@ const meta: Meta<typeof Tab> = {
   },
   args: {},
   decorators: [
-    (Story: any, { args }: any): JSX.Element => {
+    (Story: any, { args }: any) => {
       const {
         tabColor,
         tabBackgroundColor,
