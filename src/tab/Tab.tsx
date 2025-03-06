@@ -6,14 +6,14 @@ import { css } from '@emotion/css';
 import { Tab as ReactTab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 const tabList = css`
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
 `;
 
 const tabCss = css`
   color: var(--unselected-color);
   background-color: var(--unselected-background-color);
-  border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0px 0px;
 
   display: inline-block;
   position: relative;
@@ -40,12 +40,14 @@ const tabCss = css`
 const selectedTab = css`
   color: var(--selected-color);
   background-color: var(--selected-background-color);
-  border: 1px solid var(--selected-color);
+  border-color: var(--selected-color);
+  border-style: solid;
+  border-width: 1px;
   border-bottom: 0px;
   bottom: -1px;
 `;
 
-const disabledTab = css`
+const disabledTabSelected = css`
   color: var(--disabled-color);
   background-color: var(--disabled-background-color);
   cursor: not-allowed;
@@ -53,21 +55,28 @@ const disabledTab = css`
   &:before {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 0px;
+    right: 0px;
     bottom: -1px;
     height: 2px;
     background-color: var(--disabled-border-workaround);
   }
+
   &:after {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 0px;
+    right: 0px;
     bottom: -1px;
     height: 2px;
     background-color: var(--disabled-background-color);
   }
+`;
+
+const disabledTab = css`
+  color: var(--disabled-color);
+  background-color: var(--disabled-background-color);
+  cursor: not-allowed;
 `;
 
 const tabPanel = css`
@@ -78,8 +87,10 @@ const selectedTabPanel = css`
   display: block;
   color: var(--color);
   background-color: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: 0 0 5px 5px;
+  border-color: var(--border-color);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 0px 0px 5px 5px;
   padding: 4px;
 `;
 
@@ -92,7 +103,7 @@ type TabProps = {
     content: (props: { disabled?: boolean }) => JSX.Element;
     disabled?: boolean;
   }[];
-  style?: {
+  theme?: {
     tabColor?: string;
     tabBackgroundColor?: string;
     disabledTabColor?: string;
@@ -115,17 +126,17 @@ function Tab({
   defaultIndex,
   jumpToFirstEnabled,
   tabs,
-  style: {
-    tabColor = 'black',
+  theme: {
+    tabColor = 'inherit',
     tabBackgroundColor = 'white',
     disabledTabColor = 'gray',
-    disabledTagBackgroundColor = 'gray',
-    selectedTabColor = 'black',
+    disabledTagBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+    selectedTabColor = 'inherit',
     selectedTabBackgroundColor = 'white',
-    panelColor = 'black',
+    panelColor = 'inherit',
     panelBackgroundColor = 'white',
     disabledPanelColor = 'gray',
-    disabledPanelBackgroundColor = 'gray',
+    disabledPanelBackgroundColor = 'rgba(128, 128, 128, 0.2)',
     width = 'inherit',
     height = 'inherit',
   } = {},
@@ -155,7 +166,7 @@ function Tab({
             key={index}
             className={tabCss}
             selectedClassName={selectedTab}
-            disabledClassName={disabledTab}
+            disabledClassName={selectedTabIndex === index ? disabledTabSelected : disabledTab}
             disabled={tab.disabled}
             style={{
               ['--unselected-color' as never]: tabColor,

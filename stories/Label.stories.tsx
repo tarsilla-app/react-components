@@ -23,13 +23,13 @@ const meta: Meta<typeof Label> = {
       },
       description: 'id',
     },
-    style: {
+    theme: {
       control: 'object',
       table: {
         disable: true,
         type: { summary: 'object' },
       },
-      description: 'style',
+      description: 'theme',
     },
     // @ts-ignore
     color: {
@@ -44,7 +44,7 @@ const meta: Meta<typeof Label> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'inherit' },
+        defaultValue: { summary: 'white' },
       },
       description: 'set background color',
     },
@@ -60,13 +60,16 @@ const meta: Meta<typeof Label> = {
   },
   args: {},
   decorators: [
-    (Story: any, { args }: any) => {
+    (Story, { args }: any) => {
       const { layoutType, color, backgroundColor, ...rest } = args;
-      const updatedArgs = {
-        ...rest,
-        style: { layoutType, color, backgroundColor },
-      };
-      return <Story args={updatedArgs} />;
+      return (
+        <Story
+          args={{
+            ...rest,
+            theme: { layoutType, color, backgroundColor },
+          }}
+        />
+      );
     },
   ],
 };
@@ -77,9 +80,16 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     id: 'id-123',
+    value: 'Tarsilla',
+  },
+};
+
+export const Styled: Story = {
+  args: {
+    id: 'id-123',
     // @ts-ignore
-    color: 'black',
-    backgroundColor: 'white',
+    color: 'blue',
+    backgroundColor: 'yellow',
     value: 'Tarsilla',
   },
 };

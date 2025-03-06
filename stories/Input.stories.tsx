@@ -42,13 +42,13 @@ const meta: Meta<typeof Input> = {
         defaultValue: { summary: 'undefined' },
       },
     },
-    style: {
+    theme: {
       control: 'object',
       table: {
         disable: true,
         type: { summary: 'object' },
       },
-      description: 'style',
+      description: 'theme',
     },
     // @ts-ignore
     layoutType: {
@@ -72,7 +72,7 @@ const meta: Meta<typeof Input> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'inherit' },
+        defaultValue: { summary: 'white' },
       },
       description: 'set background color',
     },
@@ -182,20 +182,23 @@ const meta: Meta<typeof Input> = {
     onBlur: fn(),
   },
   decorators: [
-    (Story: any, { args }: any) => {
+    (Story, { args }: any) => {
       const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, value, ...rest } =
         args;
       const [_value, _setValue] = useState(value);
-      const updatedArgs = {
-        ...rest,
-        style: { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width },
-        value: _value,
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-          _setValue(e.target.value);
-          console.log('onChange', e.target.value);
-        },
-      };
-      return <Story args={updatedArgs} />;
+      return (
+        <Story
+          args={{
+            ...rest,
+            theme: { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width },
+            value: _value,
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+              _setValue(e.target.value);
+              console.log('onChange', e.target.value);
+            },
+          }}
+        />
+      );
     },
   ],
 };
@@ -205,38 +208,27 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    value: 'Hello World',
     id: 'id-123',
     type: 'text',
-    placeholder: 'Placeholder',
+    value: 'Tarsilla',
+  },
+};
+
+export const Line: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    value: 'Tarsilla',
     // @ts-ignore
-    layoutType: 'rounded',
-    color: 'black',
-    backgroundColor: 'white',
-    disabledColor: 'gray',
-    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '150px',
-    required: false,
-    disabled: false,
-    debounceWait: undefined,
+    layoutType: 'line',
   },
 };
 
 export const Debounce: Story = {
   args: {
-    value: 'Hello World',
     id: 'id-123',
     type: 'text',
-    placeholder: 'Placeholder',
-    // @ts-ignore
-    layoutType: 'rounded',
-    color: 'black',
-    backgroundColor: 'white',
-    disabledColor: 'gray',
-    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '150px',
-    required: false,
-    disabled: false,
+    value: 'Tarsilla',
     debounceWait: 2000,
   },
 };
@@ -245,16 +237,116 @@ export const Disabled: Story = {
   args: {
     id: 'id-123',
     type: 'text',
-    placeholder: 'Placeholder',
-    // @ts-ignore
-    layoutType: 'rounded',
-    color: 'black',
-    backgroundColor: 'white',
-    disabledColor: 'gray',
-    disabledBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '150px',
-    required: false,
+    value: 'Tarsilla',
     disabled: true,
-    debounceWait: undefined,
+  },
+};
+
+export const LineDisabled: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    value: 'Tarsilla',
+    // @ts-ignore
+    layoutType: 'line',
+    disabled: true,
+  },
+};
+
+export const Placeholder: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    placeholder: 'Placeholder',
+  },
+};
+
+export const LinePlaceholder: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    // @ts-ignore
+    layoutType: 'line',
+    placeholder: 'Placeholder',
+  },
+};
+
+export const Styled: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    value: 'Tarsilla',
+    // @ts-ignore
+    color: 'blue',
+    backgroundColor: 'yellow',
+  },
+};
+
+export const StyledDisabled: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    value: 'Tarsilla',
+    // @ts-ignore
+    disabledColor: 'red',
+    disabledBackgroundColor: 'rgb(0, 255, 0, 0.2)',
+    disabled: true,
+  },
+};
+
+export const StyledLine: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    value: 'Tarsilla',
+    // @ts-ignore
+    layoutType: 'line',
+    color: 'blue',
+    backgroundColor: 'yellow',
+  },
+};
+
+export const StyledLineDisabled: Story = {
+  args: {
+    id: 'id-123',
+    type: 'text',
+    value: 'Tarsilla',
+    // @ts-ignore
+    layoutType: 'line',
+    disabledColor: 'red',
+    disabledBackgroundColor: 'rgb(0, 255, 0, 0.2)',
+    disabled: true,
+  },
+};
+
+export const Number: Story = {
+  args: {
+    id: 'id-123',
+    type: 'number',
+    value: 'Tarsilla',
+  },
+};
+
+export const Email: Story = {
+  args: {
+    id: 'id-123',
+    type: 'email',
+    value: 'tarsilla@tarsilla.com.br',
+  },
+};
+
+export const Password: Story = {
+  args: {
+    id: 'id-123',
+    type: 'password',
+    value: 'Tarsilla',
+  },
+};
+
+export const Tel: Story = {
+  args: {
+    id: 'id-123',
+    type: 'tel',
+    value: '+55 11 99999-9999',
   },
 };

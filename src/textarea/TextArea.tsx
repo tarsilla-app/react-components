@@ -23,12 +23,19 @@ const Container = styled.textarea<ContainerProps>`
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 
-  border: ${({ layoutType, color }) => `${layoutType === 'line' ? 0 : `1px solid ${color}`}`};
-  border-bottom: ${({ layoutType, color }) => `${layoutType === 'line' ? `1px solid ${color}` : undefined}`};
-  border-radius: ${({ layoutType }) => `${layoutType === 'line' ? undefined : '12px'}`};
-  padding: ${({ layoutType }) => `${layoutType === 'line' ? '2px 2px' : undefined}`};
-  padding-left: ${({ layoutType }) => `${layoutType === 'line' ? undefined : '8px'}`};
-  padding-right: ${({ layoutType }) => `${layoutType === 'line' ? undefined : '8px'}`};
+  border-color: ${({ color }) => color};
+  border-style: solid;
+  border-radius: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '12px'}`};
+
+  border-top-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
+  border-right-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
+  border-bottom-width: 1px;
+  border-left-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
+
+  padding-left: 8px;
+  padding-right: 8px;
+
+  cursor: text;
 
   ::placeholder,
   ::-webkit-input-placeholder {
@@ -47,10 +54,7 @@ const Container = styled.textarea<ContainerProps>`
     cursor: not-allowed;
     color: ${({ disabledColor }) => `${disabledColor}`};
     background-color: ${({ disabledBackgroundColor }) => `${disabledBackgroundColor}`};
-
-    border: ${({ layoutType, disabledColor }) => `${layoutType === 'line' ? 0 : `1px solid ${disabledColor}`}`};
-    border-bottom: ${({ layoutType, disabledColor }) =>
-      `${layoutType === 'line' ? `1px solid ${disabledColor}` : undefined}`};
+    border-color: ${({ disabledColor }) => disabledColor};
 
     ::placeholder,
     ::-webkit-input-placeholder {
@@ -65,7 +69,7 @@ const Container = styled.textarea<ContainerProps>`
 type TextAreaProps = {
   id?: string;
   placeholder?: string;
-  style?: {
+  theme?: {
     layoutType?: 'line' | 'rounded';
     color?: string;
     backgroundColor?: string;
@@ -91,10 +95,10 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     {
       id,
       placeholder = undefined,
-      style: {
+      theme: {
         layoutType = 'rounded',
         color = 'inherit',
-        backgroundColor = 'inherit',
+        backgroundColor = 'white',
         disabledColor = 'gray',
         disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
         width = 'inherit',
@@ -112,6 +116,10 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     },
     ref,
   ) => {
+    if (backgroundColor === 'inherit') {
+      throw new Error('backgroundColor cannot be "inherit"');
+    }
+
     const [localValue, setLocalValue] = useState(value);
 
     useEffect(() => {

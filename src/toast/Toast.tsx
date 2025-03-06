@@ -7,10 +7,10 @@ import { Id, toast, ToastContainer, ToastItem } from 'react-toastify';
 
 const Container = styled.div`
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
   opacity: 0.5;
   background-color: black;
   justify-content: center;
@@ -28,8 +28,6 @@ function Loading({ loading }: LoadingProps) {
   return loading.length > 0 ? <Container /> : undefined;
 }
 
-//TODO error on console
-//TODO get success, warning, error from tarsila UI
 function Toast(): JSX.Element {
   const [loading, setLoading] = useState<Id[]>([]);
 

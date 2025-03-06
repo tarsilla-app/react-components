@@ -15,20 +15,20 @@ const meta: Meta<typeof Tab> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    style: {
+    theme: {
       control: 'object',
       table: {
         disable: true,
         type: { summary: 'object' },
       },
-      description: 'style',
+      description: 'theme',
     },
     // @ts-ignore
     tabColor: {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'black' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set tab color',
     },
@@ -60,7 +60,7 @@ const meta: Meta<typeof Tab> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'black' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set selected tab color',
     },
@@ -76,7 +76,7 @@ const meta: Meta<typeof Tab> = {
       control: 'color',
       table: {
         type: { summary: 'text' },
-        defaultValue: { summary: 'black' },
+        defaultValue: { summary: 'inherit' },
       },
       description: 'set panel color',
     },
@@ -145,9 +145,25 @@ const meta: Meta<typeof Tab> = {
       description: 'tabs',
     },
   },
-  args: {},
+  args: {
+    tabs: [
+      {
+        header: () => <div>Tab 1</div>,
+        content: () => <div>Content 1</div>,
+        disabled: true,
+      },
+      {
+        header: () => <div>Tab 2</div>,
+        content: () => <div>Content 2</div>,
+      },
+      {
+        header: () => <div>Tab 3</div>,
+        content: () => <div>Content 3</div>,
+      },
+    ],
+  },
   decorators: [
-    (Story: any, { args }: any) => {
+    (Story, { args }: any) => {
       const {
         tabColor,
         tabBackgroundColor,
@@ -163,24 +179,27 @@ const meta: Meta<typeof Tab> = {
         height,
         ...rest
       } = args;
-      const updatedArgs = {
-        ...rest,
-        style: {
-          tabColor,
-          tabBackgroundColor,
-          disabledTabColor,
-          disabledTagBackgroundColor,
-          selectedTabColor,
-          selectedTabBackgroundColor,
-          panelColor,
-          panelBackgroundColor,
-          disabledPanelColor,
-          disabledPanelBackgroundColor,
-          width,
-          height,
-        },
-      };
-      return <Story args={updatedArgs} />;
+      return (
+        <Story
+          args={{
+            ...rest,
+            theme: {
+              tabColor,
+              tabBackgroundColor,
+              disabledTabColor,
+              disabledTagBackgroundColor,
+              selectedTabColor,
+              selectedTabBackgroundColor,
+              panelColor,
+              panelBackgroundColor,
+              disabledPanelColor,
+              disabledPanelBackgroundColor,
+              width,
+              height,
+            },
+          }}
+        />
+      );
     },
   ],
 };
@@ -190,61 +209,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    // @ts-ignore
-    tabColor: 'black',
-    tabBackgroundColor: 'white',
-    disabledTabColor: 'gray',
-    disabledTagBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    selectedTabColor: 'black',
-    selectedTabBackgroundColor: 'white',
-    panelColor: 'black',
-    panelBackgroundColor: 'white',
-    disabledPanelColor: 'gray',
-    disabledPanelBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '250px',
-    disabledContent: undefined,
-    defaultIndex: undefined,
-    jumpToFirstEnabled: undefined,
     tabs: [
       {
         header: () => <div>Tab 1</div>,
         content: () => <div>Content 1</div>,
-      },
-      {
-        header: () => <div>Tab 2</div>,
-        content: () => <div>Content 2</div>,
-        disabled: true,
-      },
-      {
-        header: () => <div>Tab 3</div>,
-        content: () => <div>Content 3</div>,
-      },
-    ],
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    // @ts-ignore
-    tabColor: 'black',
-    tabBackgroundColor: 'white',
-    disabledTabColor: 'gray',
-    disabledTagBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    selectedTabColor: 'black',
-    selectedTabBackgroundColor: 'white',
-    panelColor: 'black',
-    panelBackgroundColor: 'white',
-    disabledPanelColor: 'gray',
-    disabledPanelBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '250px',
-    disabledContent: undefined,
-    defaultIndex: undefined,
-    jumpToFirstEnabled: undefined,
-    tabs: [
-      {
-        header: () => <div>Tab 1</div>,
-        content: () => <div>Content 1</div>,
-        disabled: true,
       },
       {
         header: () => <div>Tab 2</div>,
@@ -257,128 +225,29 @@ export const Disabled: Story = {
     ],
   },
 };
+
+export const Disabled: Story = {};
 
 export const HideDisabled: Story = {
   args: {
-    // @ts-ignore
-    tabColor: 'black',
-    tabBackgroundColor: 'white',
-    disabledTabColor: 'gray',
-    disabledTagBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    selectedTabColor: 'black',
-    selectedTabBackgroundColor: 'white',
-    panelColor: 'black',
-    panelBackgroundColor: 'white',
-    disabledPanelColor: 'gray',
-    disabledPanelBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '250px',
-    disabledContent: () => <div>Escondido</div>,
-    defaultIndex: undefined,
-    jumpToFirstEnabled: undefined,
-    tabs: [
-      {
-        header: () => <div>Tab 1</div>,
-        content: () => <div>Content 1</div>,
-        disabled: true,
-      },
-      {
-        header: () => <div>Tab 2</div>,
-        content: () => <div>Content 2</div>,
-      },
-      {
-        header: () => <div>Tab 3</div>,
-        content: () => <div>Content 3</div>,
-      },
-    ],
+    disabledContent: () => <div>Hidden</div>,
   },
 };
 
 export const DefaultIndex: Story = {
   args: {
-    // @ts-ignore
-    tabColor: 'black',
-    tabBackgroundColor: 'white',
-    disabledTabColor: 'gray',
-    disabledTagBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    selectedTabColor: 'black',
-    selectedTabBackgroundColor: 'white',
-    panelColor: 'black',
-    panelBackgroundColor: 'white',
-    disabledPanelColor: 'gray',
-    disabledPanelBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '250px',
-    disabledContent: undefined,
     defaultIndex: 1,
-    jumpToFirstEnabled: undefined,
-    tabs: [
-      {
-        header: () => <div>Tab 1</div>,
-        content: () => <div>Content 1</div>,
-        disabled: true,
-      },
-      {
-        header: () => <div>Tab 2</div>,
-        content: () => <div>Content 2</div>,
-      },
-      {
-        header: () => <div>Tab 3</div>,
-        content: () => <div>Content 3</div>,
-      },
-    ],
   },
 };
 
-export const jumpToFirstEnabled: Story = {
+export const JumpToFirstEnabled: Story = {
   args: {
-    // @ts-ignore
-    tabColor: 'black',
-    tabBackgroundColor: 'white',
-    disabledTabColor: 'gray',
-    disabledTagBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    selectedTabColor: 'black',
-    selectedTabBackgroundColor: 'white',
-    panelColor: 'black',
-    panelBackgroundColor: 'white',
-    disabledPanelColor: 'gray',
-    disabledPanelBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '250px',
-    disabledContent: undefined,
-    defaultIndex: undefined,
     jumpToFirstEnabled: true,
-    tabs: [
-      {
-        header: () => <div>Tab 1</div>,
-        content: () => <div>Content 1</div>,
-        disabled: true,
-      },
-      {
-        header: () => <div>Tab 2</div>,
-        content: () => <div>Content 2</div>,
-      },
-      {
-        header: () => <div>Tab 3</div>,
-        content: () => <div>Content 3</div>,
-      },
-    ],
   },
 };
 
-export const jumpToFirstEnabledWithAllDisabled: Story = {
+export const JumpToFirstEnabledWithAllDisabled: Story = {
   args: {
-    // @ts-ignore
-    tabColor: 'black',
-    tabBackgroundColor: 'white',
-    disabledTabColor: 'gray',
-    disabledTagBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    selectedTabColor: 'black',
-    selectedTabBackgroundColor: 'white',
-    panelColor: 'black',
-    panelBackgroundColor: 'white',
-    disabledPanelColor: 'gray',
-    disabledPanelBackgroundColor: 'rgba(128, 128, 128, 0.2)',
-    width: '250px',
-    disabledContent: undefined,
-    defaultIndex: undefined,
     jumpToFirstEnabled: true,
     tabs: [
       {
@@ -397,5 +266,56 @@ export const jumpToFirstEnabledWithAllDisabled: Story = {
         disabled: true,
       },
     ],
+  },
+};
+
+export const Styled: Story = {
+  args: {
+    tabs: [
+      {
+        header: () => <div>Tab 1</div>,
+        content: () => <div>Content 1</div>,
+      },
+      {
+        header: () => <div>Tab 2</div>,
+        content: () => <div>Content 2</div>,
+      },
+      {
+        header: () => <div>Tab 3</div>,
+        content: () => <div>Content 3</div>,
+      },
+    ],
+    // @ts-ignore
+    tabColor: 'yellow',
+    tabBackgroundColor: 'blue',
+    selectedTabColor: 'blue',
+    selectedTabBackgroundColor: 'yellow',
+    panelColor: 'blue',
+    panelBackgroundColor: 'yellow',
+  },
+};
+
+export const StyledDisabled: Story = {
+  args: {
+    tabs: [
+      {
+        header: () => <div>Tab 1</div>,
+        content: () => <div>Content 1</div>,
+        disabled: true,
+      },
+      {
+        header: () => <div>Tab 2</div>,
+        content: () => <div>Content 2</div>,
+      },
+      {
+        header: () => <div>Tab 3</div>,
+        content: () => <div>Content 3</div>,
+      },
+    ],
+    // @ts-ignore
+    disabledTabColor: 'blue',
+    disabledTagBackgroundColor: 'yellow',
+    disabledPanelColor: 'blue',
+    disabledPanelBackgroundColor: 'yellow',
   },
 };

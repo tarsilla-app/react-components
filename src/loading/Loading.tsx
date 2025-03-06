@@ -18,7 +18,9 @@ const spin = keyframes`
 
 const Container = styled.div<ContainerProps>`
   border: 8px solid #f3f3f3;
-  border-top: ${({ color }) => `8px solid ${color}`};
+  border-top-color: ${({ color }) => color};
+  border-top-style: solid;
+  border-top-width: 8px;
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -28,10 +30,12 @@ const Container = styled.div<ContainerProps>`
 
 type LoadingProps = {
   id?: string;
-  color?: string;
+  theme?: {
+    color?: string;
+  };
 };
 
-function Loading({ id, color = 'black' }: LoadingProps): JSX.Element {
+function Loading({ id, theme: { color = 'inherit' } = {} }: LoadingProps): JSX.Element {
   return <Container id={id} color={color} />;
 }
 
