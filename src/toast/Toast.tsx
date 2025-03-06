@@ -29,6 +29,7 @@ function Loading({ loading }: LoadingProps) {
 }
 
 //TODO error on console
+//TODO get success, warning, error from tarsila UI
 function Toast(): JSX.Element {
   const [loading, setLoading] = useState<Id[]>([]);
 

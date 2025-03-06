@@ -150,7 +150,7 @@ const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
       style: {
         layoutType = 'rounded',
         color = 'inherit',
-        backgroundColor = 'inherit',
+        backgroundColor = 'inherit', //TODO is getting transparent
         disabledColor = 'gray',
         disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
         selectedItemColor = 'blue',
