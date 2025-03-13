@@ -1,11 +1,60 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import { Tab, TabProps } from '../src//index.js';
 
-import { Tab } from '../src//index.js';
+type StyleDecoratorProps = {
+  tabColor?: string;
+  tabBackgroundColor?: string;
+  disabledTabColor?: string;
+  disabledTagBackgroundColor?: string;
+  selectedTabColor?: string;
+  selectedTabBackgroundColor?: string;
+  panelColor?: string;
+  panelBackgroundColor?: string;
+  disabledPanelColor?: string;
+  disabledPanelBackgroundColor?: string;
+  width?: string;
+  height?: string;
+};
+
+const StyleDecorator: Decorator<TabProps> = (Story, { args }) => {
+  const {
+    tabColor,
+    tabBackgroundColor,
+    disabledTabColor,
+    disabledTagBackgroundColor,
+    selectedTabColor,
+    selectedTabBackgroundColor,
+    panelColor,
+    panelBackgroundColor,
+    disabledPanelColor,
+    disabledPanelBackgroundColor,
+    width,
+    height,
+    ...rest
+  } = args as unknown as StyleDecoratorProps;
+  return (
+    <Story
+      args={{
+        ...rest,
+        theme: {
+          tabColor,
+          tabBackgroundColor,
+          disabledTabColor,
+          disabledTagBackgroundColor,
+          selectedTabColor,
+          selectedTabBackgroundColor,
+          panelColor,
+          panelBackgroundColor,
+          disabledPanelColor,
+          disabledPanelBackgroundColor,
+          width,
+          height,
+        },
+      }}
+    />
+  );
+};
 
 const meta: Meta<typeof Tab> = {
   title: 'Tab',
@@ -162,46 +211,7 @@ const meta: Meta<typeof Tab> = {
       },
     ],
   },
-  decorators: [
-    (Story, { args }: any) => {
-      const {
-        tabColor,
-        tabBackgroundColor,
-        disabledTabColor,
-        disabledTagBackgroundColor,
-        selectedTabColor,
-        selectedTabBackgroundColor,
-        panelColor,
-        panelBackgroundColor,
-        disabledPanelColor,
-        disabledPanelBackgroundColor,
-        width,
-        height,
-        ...rest
-      } = args;
-      return (
-        <Story
-          args={{
-            ...rest,
-            theme: {
-              tabColor,
-              tabBackgroundColor,
-              disabledTabColor,
-              disabledTagBackgroundColor,
-              selectedTabColor,
-              selectedTabBackgroundColor,
-              panelColor,
-              panelBackgroundColor,
-              disabledPanelColor,
-              disabledPanelBackgroundColor,
-              width,
-              height,
-            },
-          }}
-        />
-      );
-    },
-  ],
+  decorators: [StyleDecorator],
 };
 
 export default meta;

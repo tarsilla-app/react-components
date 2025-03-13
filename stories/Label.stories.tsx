@@ -1,11 +1,23 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import { Label, LabelProps } from '../src/label/index.js';
 
-import { Label } from '../src/label/index.js';
+type StyleDecoratorProps = {
+  color?: string;
+  backgroundColor?: string;
+};
+
+const StyleDecorator: Decorator<LabelProps> = (Story, { args }) => {
+  const { color, backgroundColor, ...rest } = args as unknown as StyleDecoratorProps;
+  return (
+    <Story
+      args={{
+        ...rest,
+        theme: { color, backgroundColor },
+      }}
+    />
+  );
+};
 
 const meta: Meta<typeof Label> = {
   title: 'Label',
@@ -59,19 +71,7 @@ const meta: Meta<typeof Label> = {
     },
   },
   args: {},
-  decorators: [
-    (Story, { args }: any) => {
-      const { layoutType, color, backgroundColor, ...rest } = args;
-      return (
-        <Story
-          args={{
-            ...rest,
-            theme: { layoutType, color, backgroundColor },
-          }}
-        />
-      );
-    },
-  ],
+  decorators: [StyleDecorator],
 };
 
 export default meta;

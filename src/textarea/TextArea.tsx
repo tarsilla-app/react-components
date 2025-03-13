@@ -73,8 +73,8 @@ type TextAreaProps = {
     layoutType?: 'line' | 'rounded';
     color?: string;
     backgroundColor?: string;
-    disabledColor: string;
-    disabledBackgroundColor: string;
+    disabledColor?: string;
+    disabledBackgroundColor?: string;
     width?: string;
   };
   value?: string;

@@ -1,14 +1,60 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { ActionMeta } from 'react-select';
 
-import { Option, Select } from '../src/select/index.js';
+import { Option, Select, SelectProps } from '../src/select/index.js';
+
+type StyleDecoratorProps = {
+  layoutType?: 'rounded' | 'line' | undefined;
+  color?: string;
+  backgroundColor?: string;
+  disabledColor?: string;
+  disabledBackgroundColor?: string;
+  selectedItemColor?: string;
+  disabledItemColor?: string;
+  width?: string;
+  value?: string | string[] | undefined;
+};
+
+const StyleDecorator: Decorator<SelectProps<Option>> = (Story, { args }) => {
+  const {
+    layoutType,
+    color,
+    backgroundColor,
+    disabledColor,
+    disabledBackgroundColor,
+    selectedItemColor,
+    disabledItemColor,
+    width,
+    value,
+    ...rest
+  } = args as StyleDecoratorProps;
+  const [_value, _setValue] = useState(value);
+  return (
+    <Story
+      args={{
+        ...rest,
+        theme: {
+          layoutType,
+          color,
+          backgroundColor,
+          disabledColor,
+          disabledBackgroundColor,
+          selectedItemColor,
+          disabledItemColor,
+          width,
+        },
+        value: _value,
+        onChange: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => {
+          _setValue(value);
+          console.log('onChange', value, actionMeta);
+        },
+      }}
+    />
+  );
+};
 
 const meta: Meta<typeof Select> = {
   title: 'Select',
@@ -223,45 +269,7 @@ const meta: Meta<typeof Select> = {
       },
     ],
   },
-  decorators: [
-    (Story, { args }: any) => {
-      const {
-        layoutType,
-        color,
-        backgroundColor,
-        disabledColor,
-        disabledBackgroundColor,
-        selectedItemColor,
-        disabledItemColor,
-        width,
-        value,
-        ...rest
-      } = args;
-      const [_value, _setValue] = useState(value);
-      return (
-        <Story
-          args={{
-            ...rest,
-            theme: {
-              layoutType,
-              color,
-              backgroundColor,
-              disabledColor,
-              disabledBackgroundColor,
-              selectedItemColor,
-              disabledItemColor,
-              width,
-            },
-            value: _value,
-            onChange: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => {
-              _setValue(value);
-              console.log('onChange', value, actionMeta);
-            },
-          }}
-        />
-      );
-    },
-  ],
+  decorators: [StyleDecorator],
 };
 
 export default meta;

@@ -1,13 +1,38 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { TextArea } from '../src/textarea/index.js';
+import { TextArea, TextAreaProps } from '../src/textarea/index.js';
+
+type StyleDecoratorProps = {
+  layoutType?: 'rounded' | 'line' | undefined;
+  color?: string;
+  backgroundColor?: string;
+  disabledColor?: string;
+  disabledBackgroundColor?: string;
+  width?: string;
+  value?: string;
+};
+
+const StyleDecorator: Decorator<TextAreaProps> = (Story, { args }) => {
+  const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, value, ...rest } =
+    args as unknown as StyleDecoratorProps;
+  const [_value, _setValue] = useState(value);
+  return (
+    <Story
+      args={{
+        ...rest,
+        theme: { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width },
+        value: _value,
+        onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+          _setValue(e.target.value);
+          console.log('onChange', e.target.value);
+        },
+      }}
+    />
+  );
+};
 
 const meta: Meta<typeof TextArea> = {
   title: 'TextArea',
@@ -161,26 +186,7 @@ const meta: Meta<typeof TextArea> = {
     onBlur: fn(),
     rows: 5,
   },
-  decorators: [
-    (Story, { args }: any) => {
-      const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, value, ...rest } =
-        args;
-      const [_value, _setValue] = useState(value);
-      return (
-        <Story
-          args={{
-            ...rest,
-            theme: { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width },
-            value: _value,
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-              _setValue(e.target.value);
-              console.log('onChange', e.target.value);
-            },
-          }}
-        />
-      );
-    },
-  ],
+  decorators: [StyleDecorator],
 };
 
 export default meta;

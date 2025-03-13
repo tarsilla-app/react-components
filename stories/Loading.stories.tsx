@@ -1,11 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import { Loading, LoadingProps } from '../src/loading/index.js';
 
-import { Loading } from '../src/loading/index.js';
+type StyleDecoratorProps = {
+  color?: string;
+};
+
+const StyleDecorator: Decorator<LoadingProps> = (Story, { args }) => {
+  const { color, ...rest } = args as StyleDecoratorProps;
+  return (
+    <Story
+      args={{
+        ...rest,
+        theme: { color },
+      }}
+    />
+  );
+};
 
 const meta: Meta<typeof Loading> = {
   title: 'Loading',
@@ -42,19 +53,7 @@ const meta: Meta<typeof Loading> = {
     },
   },
   args: {},
-  decorators: [
-    (Story, { args }: any) => {
-      const { color, ...rest } = args;
-      return (
-        <Story
-          args={{
-            ...rest,
-            theme: { color },
-          }}
-        />
-      );
-    },
-  ],
+  decorators: [StyleDecorator],
 };
 
 export default meta;
