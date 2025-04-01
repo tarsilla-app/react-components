@@ -25,4 +25,6 @@ jobs:
       url: ${{ needs.ci-cd.outputs.pages_url }}
     steps:
       - name: Print Pages URL
-        run: "echo 'Deployed Pages URL: ${{ needs.ci-cd.outputs.pages_url }}'"
+        run: "echo 'Deployed Pages URL: ${{ needs.ci-cd.outputs.deploy-storybook.pages_url }}'"
+      - name: Print Outputs
+        run: "echo 'Deployed Pages URL: ${{toJson( needs.ci-cd.outputs) }}'"
