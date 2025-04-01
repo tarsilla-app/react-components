@@ -12,8 +12,8 @@ jobs:
     uses: tarsilla-app/workflows/.github/workflows/node.yml@main
     with:
       suppression: true
-      publish: '["library", "npm"]'
-      deploy: '["storybook", "github-pages"]'
+      publish: '{"type": "library", "repository": "npm"}'
+      deploy: '{"type": "storybook", "host": "github-pages"}'
     secrets: 
       snyk-token: ${{ secrets.SNYK_TOKEN }}
       npm-token: ${{ secrets.NPM_TOKEN }}
