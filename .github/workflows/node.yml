@@ -12,8 +12,17 @@ jobs:
     uses: tarsilla-app/workflows/.github/workflows/node.yml@main
     with:
       suppression: true
-      publish: npm
-      deploy: storybook
+      publish: '["library", "npm"]'
+      deploy: '["storybook", "github-pages"]'
     secrets: 
       snyk-token: ${{ secrets.SNYK_TOKEN }}
       npm-token: ${{ secrets.NPM_TOKEN }}
+  use-pages-url:
+    runs-on: ubuntu-latest
+    needs: ci-cd
+    environment:
+      name: github-pages
+      url: ${{ needs.ci-cd.outputs.pages_url }}
+    steps:
+      - name: Print Pages URL
+        run: "echo 'Deployed Pages URL: ${{ needs.ci-cd.outputs.pages_url }}'"
