@@ -24,8 +24,6 @@ jobs:
       name: github-pages
       url: ${{ needs.ci-cd.outputs.pages_url }}
     steps:
-      - name: Print Results
-        run: "echo '${{toJson( needs.ci-cd.result) }}'"
       - name: Print Outputs
         run: "echo '${{toJson( needs.ci-cd.outputs) }}'"
       - name: Print entire needs.ci-cd
