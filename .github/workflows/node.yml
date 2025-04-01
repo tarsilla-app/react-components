@@ -8,6 +8,7 @@ jobs:
       security-events: write
       contents: write
       id-token: write
+      pages: write
     uses: tarsilla-app/workflows/.github/workflows/node.yml@main
     with:
       suppression: true
