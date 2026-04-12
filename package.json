@@ -1,11 +1,15 @@
 {
   "name": "@tarsilla/react-components",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarsilla-app/react-components"
+  },
   "publishConfig": {
     "access": "public"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=25"
   },
   "main": "./lib/index.mjs",
   "exports": {
