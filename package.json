@@ -73,7 +73,10 @@
     "build": "npm run clean && rollup -c",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "peerDependencies": {
     "@types/react": "^19",
@@ -84,26 +87,39 @@
   "dependencies": {
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "debounce": "^2.2.0",
-    "react-icons": "^5.5.0",
-    "react-select": "^5.10.1",
-    "react-tabs": "^6.1.0",
+    "@emotion/styled": "^11.14.1",
+    "debounce": "^3.0.0",
+    "react-icons": "^5.6.0",
+    "react-select": "^5.10.2",
+    "react-tabs": "^6.1.1",
     "react-toastify": "^11.0.5"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^3.2.6",
-    "@storybook/addon-essentials": "^8.6.11",
-    "@storybook/addon-interactions": "^8.6.11",
-    "@storybook/blocks": "^8.6.11",
-    "@storybook/react": "^8.6.11",
-    "@storybook/react-vite": "^8.6.11",
-    "@storybook/test": "^8.6.11",
-    "@tarsilla/commit-wizard": "^1.2.3",
-    "@tarsilla/eslint-config": "^1.1.0",
-    "@tarsilla/rollup-config": "^0.0.10",
+    "@chromatic-com/storybook": "^5.1.1",
+    "@storybook/addon-docs": "^10.3.5",
+    "@storybook/react": "^10.3.5",
+    "@storybook/react-vite": "^10.3.5",
+    "@tarsilla/commit-wizard": "^2.0.5",
+    "@tarsilla/eslint-config": "^1.4.0",
+    "@tarsilla/rollup-config": "^1.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitest/coverage-v8": "^4.1.4",
+    "eslint-plugin-storybook": "10.3.5",
     "husky": "^9.1.7",
-    "storybook": "^8.6.11",
-    "typescript": "^5.8.2"
+    "jsdom": "^29.0.2",
+    "storybook": "^10.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.4"
+  },
+  "overrides": {
+    "commitizen": {
+      "inquirer": "^8.2.7",
+      "lodash": "^4.18.1"
+    },
+    "eslint-plugin-react-hooks": {
+      "eslint": "^9.0.0 || ^10.0.0"
+    }
   }
 }

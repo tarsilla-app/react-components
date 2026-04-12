@@ -1,4 +1,5 @@
-import type { Decorator, Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
+
 import { toast } from 'react-toastify';
 
 import { Toast } from '../src/toast/index.js';
@@ -9,12 +10,12 @@ const StyleDecorator: Decorator = (Story, { args }) => {
       <button
         onClick={() =>
           toast('🦄 Wow so easy!', {
-            position: 'top-right',
             autoClose: 5000,
-            hideProgressBar: false,
             closeOnClick: false,
-            pauseOnHover: true,
             draggable: true,
+            hideProgressBar: false,
+            pauseOnHover: true,
+            position: 'top-right',
             progress: undefined,
             theme: 'light',
             //transition: Bounce,
@@ -29,14 +30,14 @@ const StyleDecorator: Decorator = (Story, { args }) => {
 };
 
 const meta: Meta<typeof Toast> = {
-  title: 'Toast',
+  args: {},
+  argTypes: {},
   component: Toast,
+  decorators: [StyleDecorator],
   parameters: {
     layout: 'centered',
   },
-  argTypes: {},
-  args: {},
-  decorators: [StyleDecorator],
+  title: 'Toast',
 };
 
 export default meta;

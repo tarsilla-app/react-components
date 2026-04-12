@@ -1,7 +1,6 @@
-import { JSX } from 'react';
-
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { JSX } from 'react';
 
 type ContainerProps = {
   color: string;
@@ -35,8 +34,10 @@ type LoadingProps = {
   };
 };
 
-function Loading({ id, theme: { color = 'inherit' } = {} }: LoadingProps): JSX.Element {
-  return <Container id={id} color={color} />;
+const DEFAULT_THEME: NonNullable<LoadingProps['theme']> = {};
+
+function Loading({ id, theme: { color = 'inherit' } = DEFAULT_THEME }: LoadingProps): JSX.Element {
+  return <Container color={color} id={id} />;
 }
 
 export { Loading, type LoadingProps };

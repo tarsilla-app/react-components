@@ -1,4 +1,4 @@
-import type { Decorator, Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 
 import { Loading, LoadingProps } from '../src/loading/index.js';
 
@@ -18,46 +18,45 @@ const StyleDecorator: Decorator<LoadingProps> = (Story, { args }) => {
   );
 };
 
-const meta: Meta<typeof Loading> = {
-  title: 'Loading',
-  component: Loading,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
+const meta: Meta<LoadingProps & StyleDecoratorProps> = {
+  args: {},
   argTypes: {
+    color: {
+      control: 'color',
+      description: 'set color',
+      table: {
+        defaultValue: { summary: 'inherit' },
+        type: { summary: 'text' },
+      },
+    },
     id: {
       control: 'text',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'undefined' },
-      },
       description: 'id',
+      table: {
+        defaultValue: { summary: 'undefined' },
+        type: { summary: 'text' },
+      },
     },
     theme: {
       control: 'object',
+      description: 'theme',
       table: {
         disable: true,
         type: { summary: 'object' },
       },
-      description: 'theme',
-    },
-    // @ts-ignore
-    color: {
-      control: 'color',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'inherit' },
-      },
-      description: 'set color',
     },
   },
-  args: {},
+  component: Loading,
   decorators: [StyleDecorator],
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  title: 'Loading',
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<LoadingProps & StyleDecoratorProps>;
 
 export const Default: Story = {
   args: {
@@ -67,8 +66,7 @@ export const Default: Story = {
 
 export const Styled: Story = {
   args: {
-    id: 'id-123',
-    // @ts-ignore
     color: 'blue',
+    id: 'id-123',
   },
 };

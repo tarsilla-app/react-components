@@ -1,196 +1,202 @@
-import { useState } from 'react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 
-import type { Decorator, Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { useState } from 'react';
+import { fn } from 'storybook/test';
 
 import { TextArea, TextAreaProps } from '../src/textarea/index.js';
 
 type StyleDecoratorProps = {
-  layoutType?: 'rounded' | 'line' | undefined;
-  color?: string;
   backgroundColor?: string;
-  disabledColor?: string;
+  color?: string;
   disabledBackgroundColor?: string;
-  width?: string;
+  disabledColor?: string;
+  layoutType?: 'line' | 'rounded' | undefined;
   value?: string;
+  width?: string;
 };
 
 const StyleDecorator: Decorator<TextAreaProps> = (Story, { args }) => {
-  const { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width, value, ...rest } =
-    args as unknown as StyleDecoratorProps;
-  const [_value, _setValue] = useState(value);
+  const {
+    backgroundColor,
+    color,
+    disabledBackgroundColor,
+    disabledColor,
+    layoutType,
+    value: _value,
+    width,
+    ...rest
+  } = args as unknown as StyleDecoratorProps;
+  const [value, setValue] = useState(_value);
   return (
     <Story
       args={{
         ...rest,
-        theme: { layoutType, color, backgroundColor, disabledColor, disabledBackgroundColor, width },
-        value: _value,
         onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-          _setValue(e.target.value);
-          console.log('onChange', e.target.value);
+          setValue(e.target.value);
         },
+        theme: { backgroundColor, color, disabledBackgroundColor, disabledColor, layoutType, width },
+        value,
       }}
     />
   );
 };
 
-const meta: Meta<typeof TextArea> = {
-  title: 'TextArea',
-  component: TextArea,
-  parameters: {
-    layout: 'centered',
+const meta: Meta<StyleDecoratorProps & TextAreaProps> = {
+  args: {
+    onBlur: fn(),
+    onChange: fn(),
+    rows: 5,
   },
-  tags: ['autodocs'],
   argTypes: {
+    backgroundColor: {
+      control: 'color',
+      description: 'set background color',
+      table: {
+        defaultValue: { summary: 'white' },
+        type: { summary: 'text' },
+      },
+    },
+    color: {
+      control: 'color',
+      description: 'set color',
+      table: {
+        defaultValue: { summary: 'inherit' },
+        type: { summary: 'text' },
+      },
+    },
+    debounceWait: {
+      control: 'number',
+      description: 'debounce wait',
+      table: {
+        defaultValue: { summary: 'undefined' },
+        type: { summary: 'number' },
+      },
+    },
+    defaultValue: {
+      control: 'text',
+      description: 'default value',
+      disable: true,
+      table: {
+        defaultValue: { summary: 'undefined' },
+        type: { summary: 'text' },
+      },
+    },
+    disabled: {
+      control: false,
+      description: 'if true, make text disabled',
+      table: {
+        defaultValue: { summary: 'true' },
+        type: { summary: 'boolean' },
+      },
+    },
+    disabledBackgroundColor: {
+      control: 'color',
+      description: 'set disabled background color',
+      table: {
+        defaultValue: { summary: 'rgba(128, 128, 128, 0.2)' },
+        type: { summary: 'text' },
+      },
+    },
+    disabledColor: {
+      control: 'color',
+      description: 'set disabled color',
+      table: {
+        defaultValue: { summary: 'gray' },
+        type: { summary: 'text' },
+      },
+    },
     id: {
       control: 'text',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'undefined' },
-      },
       description: 'id',
+      table: {
+        defaultValue: { summary: 'undefined' },
+        type: { summary: 'text' },
+      },
+    },
+    layoutType: {
+      control: 'select',
+      description: 'layout type',
+      options: ['rounded', 'line'],
+      table: {
+        defaultValue: { summary: 'rounded' },
+        type: { summary: 'text' },
+      },
+    },
+    maxLength: {
+      control: 'number',
+      description: 'maxLength',
+      table: {
+        type: { summary: 'number' },
+      },
+    },
+    minLength: {
+      control: 'number',
+      description: 'minLength',
+      table: {
+        type: { summary: 'number' },
+      },
     },
     placeholder: {
       control: 'text',
       description: 'placeholder',
       table: {
-        type: { summary: 'text' },
         defaultValue: { summary: 'undefined' },
+        type: { summary: 'text' },
+      },
+    },
+    required: {
+      control: 'boolean',
+      description: 'if true, make select required',
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
+    rows: {
+      control: 'number',
+      description: 'text area number of rows',
+      disable: true,
+      table: {
+        defaultValue: { summary: 'undefined' },
+        type: { summary: 'number' },
       },
     },
     theme: {
       control: 'object',
+      description: 'theme',
       table: {
         disable: true,
         type: { summary: 'object' },
       },
-      description: 'theme',
-    },
-    // @ts-ignore
-    layoutType: {
-      control: 'select',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'rounded' },
-      },
-      options: ['rounded', 'line'],
-      description: 'layout type',
-    },
-    color: {
-      control: 'color',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'inherit' },
-      },
-      description: 'set color',
-    },
-    backgroundColor: {
-      control: 'color',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'white' },
-      },
-      description: 'set background color',
-    },
-    disabledColor: {
-      control: 'color',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'gray' },
-      },
-      description: 'set disabled color',
-    },
-    disabledBackgroundColor: {
-      control: 'color',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'rgba(128, 128, 128, 0.2)' },
-      },
-      description: 'set disabled background color',
-    },
-    width: {
-      control: 'text',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'inherit' },
-      },
-      description: 'width',
-    },
-    minLength: {
-      control: 'number',
-      table: {
-        type: { summary: 'number' },
-      },
-      description: 'minLength',
-    },
-    maxLength: {
-      control: 'number',
-      table: {
-        type: { summary: 'number' },
-      },
-      description: 'maxLength',
-    },
-    required: {
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-      },
-      description: 'if true, make select required',
-    },
-    disabled: {
-      control: false,
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'true' },
-      },
-      description: 'if true, make text disabled',
-    },
-    debounceWait: {
-      control: 'number',
-      table: {
-        type: { summary: 'number' },
-        defaultValue: { summary: 'undefined' },
-      },
-      description: 'debounce wait',
     },
     value: {
       control: false,
-      disable: true,
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'undefined' },
-      },
       description: 'value',
-    },
-    defaultValue: {
-      control: 'text',
       disable: true,
       table: {
+        defaultValue: { summary: 'undefined' },
         type: { summary: 'text' },
-        defaultValue: { summary: 'undefined' },
       },
-      description: 'default value',
     },
-    rows: {
-      control: 'number',
-      disable: true,
+    width: {
+      control: 'text',
+      description: 'width',
       table: {
-        type: { summary: 'number' },
-        defaultValue: { summary: 'undefined' },
+        defaultValue: { summary: 'inherit' },
+        type: { summary: 'text' },
       },
-      description: 'text area number of rows',
     },
   },
-  args: {
-    onChange: fn(),
-    onBlur: fn(),
-    rows: 5,
-  },
+  component: TextArea,
   decorators: [StyleDecorator],
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  title: 'TextArea',
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<StyleDecoratorProps & TextAreaProps>;
 
 export const Default: Story = {
   args: {
@@ -202,35 +208,33 @@ export const Default: Story = {
 export const Line: Story = {
   args: {
     id: 'id-123',
-    value: 'Tarsilla',
-    // @ts-ignore
     layoutType: 'line',
+    value: 'Tarsilla',
   },
 };
 
 export const Debounce: Story = {
   args: {
+    debounceWait: 2000,
     id: 'id-123',
     value: 'Tarsilla',
-    debounceWait: 2000,
   },
 };
 
 export const Disabled: Story = {
   args: {
+    disabled: true,
     id: 'id-123',
     value: 'Tarsilla',
-    disabled: true,
   },
 };
 
 export const LineDisabled: Story = {
   args: {
-    id: 'id-123',
-    value: 'Tarsilla',
-    // @ts-ignore
-    layoutType: 'line',
     disabled: true,
+    id: 'id-123',
+    layoutType: 'line',
+    value: 'Tarsilla',
   },
 };
 
@@ -244,7 +248,6 @@ export const Placeholder: Story = {
 export const LinePlaceholder: Story = {
   args: {
     id: 'id-123',
-    // @ts-ignore
     layoutType: 'line',
     placeholder: 'Placeholder',
   },
@@ -252,44 +255,40 @@ export const LinePlaceholder: Story = {
 
 export const Styled: Story = {
   args: {
+    backgroundColor: 'yellow',
+    color: 'blue',
     id: 'id-123',
     value: 'Tarsilla',
-    // @ts-ignore
-    color: 'blue',
-    backgroundColor: 'yellow',
   },
 };
 
 export const StyledDisabled: Story = {
   args: {
+    disabled: true,
+    disabledBackgroundColor: 'rgb(0, 255, 0, 0.2)',
+    disabledColor: 'red',
     id: 'id-123',
     value: 'Tarsilla',
-    // @ts-ignore
-    disabledColor: 'red',
-    disabledBackgroundColor: 'rgb(0, 255, 0, 0.2)',
-    disabled: true,
   },
 };
 
 export const StyledLine: Story = {
   args: {
-    id: 'id-123',
-    value: 'Tarsilla',
-    // @ts-ignore
-    layoutType: 'line',
-    color: 'blue',
     backgroundColor: 'yellow',
+    color: 'blue',
+    id: 'id-123',
+    layoutType: 'line',
+    value: 'Tarsilla',
   },
 };
 
 export const StyledLineDisabled: Story = {
   args: {
-    id: 'id-123',
-    value: 'Tarsilla',
-    // @ts-ignore
-    layoutType: 'line',
-    disabledColor: 'red',
-    disabledBackgroundColor: 'rgb(0, 255, 0, 0.2)',
     disabled: true,
+    disabledBackgroundColor: 'rgb(0, 255, 0, 0.2)',
+    disabledColor: 'red',
+    id: 'id-123',
+    layoutType: 'line',
+    value: 'Tarsilla',
   },
 };

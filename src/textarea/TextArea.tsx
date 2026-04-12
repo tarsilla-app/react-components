@@ -1,36 +1,35 @@
-import { ChangeEvent, ChangeEventHandler, FocusEventHandler, forwardRef, useEffect, useMemo, useState } from 'react';
-
-import styled from '@emotion/styled';
 import debounce from 'debounce';
+import styled from '@emotion/styled';
+import { ChangeEvent, ChangeEventHandler, FocusEventHandler, useMemo, useState } from 'react';
 
 type ContainerProps = {
-  layoutType: string;
-  color: string;
   backgroundColor: string;
-  disabledColor: string;
+  color: string;
   disabledBackgroundColor: string;
+  disabledColor: string;
+  layoutType: string;
   width: string;
 };
 
 const Container = styled.textarea<ContainerProps>`
-  color: ${({ color }) => `${color}`};
-  background-color: ${({ backgroundColor }) => `${backgroundColor}`};
+  color: ${({ color }) => color};
+  background-color: ${({ backgroundColor }) => backgroundColor};
   font-size: 16px;
   line-height: 21px;
   font-weight: 700;
-  width: ${({ width }) => `${width}`};
+  width: ${({ width }) => width};
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 
   border-color: ${({ color }) => color};
   border-style: solid;
-  border-radius: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '12px'}`};
+  border-radius: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '12px')};
 
-  border-top-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
-  border-right-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
+  border-top-width: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '1px')};
+  border-right-width: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '1px')};
   border-bottom-width: 1px;
-  border-left-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
+  border-left-width: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '1px')};
 
   padding-left: 8px;
   padding-right: 8px;
@@ -39,10 +38,10 @@ const Container = styled.textarea<ContainerProps>`
 
   ::placeholder,
   ::-webkit-input-placeholder {
-    color: ${({ color }) => `${color}`};
+    color: ${({ color }) => color};
   }
   :-ms-input-placeholder {
-    color: ${({ color }) => `${color}`};
+    color: ${({ color }) => color};
   }
 
   :focus,
@@ -52,117 +51,117 @@ const Container = styled.textarea<ContainerProps>`
 
   :disabled {
     cursor: not-allowed;
-    color: ${({ disabledColor }) => `${disabledColor}`};
-    background-color: ${({ disabledBackgroundColor }) => `${disabledBackgroundColor}`};
+    color: ${({ disabledColor }) => disabledColor};
+    background-color: ${({ disabledBackgroundColor }) => disabledBackgroundColor};
     border-color: ${({ disabledColor }) => disabledColor};
 
     ::placeholder,
     ::-webkit-input-placeholder {
-      color: ${({ disabledColor }) => `${disabledColor}`};
+      color: ${({ disabledColor }) => disabledColor};
     }
     :-ms-input-placeholder {
-      color: ${({ disabledColor }) => `${disabledColor}`};
+      color: ${({ disabledColor }) => disabledColor};
     }
   }
 `;
 
 type TextAreaProps = {
-  id?: string;
-  placeholder?: string;
-  theme?: {
-    layoutType?: 'line' | 'rounded';
-    color?: string;
-    backgroundColor?: string;
-    disabledColor?: string;
-    disabledBackgroundColor?: string;
-    width?: string;
-  };
-  value?: string;
+  debounceWait?: number;
   defaultValue?: string;
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur?: FocusEventHandler<HTMLTextAreaElement>;
+  disabled?: boolean;
+  id?: string;
   maxLength?: number;
   minLength?: number;
+  onBlur?: FocusEventHandler<HTMLTextAreaElement>;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
+  placeholder?: string;
   required?: boolean;
-  disabled?: boolean;
-  debounceWait?: number;
-
   rows?: number;
+  theme?: {
+    backgroundColor?: string;
+    color?: string;
+    disabledBackgroundColor?: string;
+    disabledColor?: string;
+    layoutType?: 'line' | 'rounded';
+    width?: string;
+  };
+
+  value?: string;
 };
 
-const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  (
-    {
-      id,
-      placeholder = undefined,
-      theme: {
-        layoutType = 'rounded',
-        color = 'inherit',
-        backgroundColor = 'white',
-        disabledColor = 'gray',
-        disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
-        width = 'inherit',
-      } = {},
-      value,
-      defaultValue,
-      onChange,
-      onBlur,
-      minLength = undefined,
-      maxLength = undefined,
-      required = false,
-      disabled = false,
-      debounceWait = undefined,
-      rows = undefined,
-    },
-    ref,
-  ) => {
-    if (backgroundColor === 'inherit') {
-      throw new Error('backgroundColor cannot be "inherit"');
+const DEFAULT_THEME: NonNullable<TextAreaProps['theme']> = {};
+
+const TextArea = ({
+  debounceWait,
+  defaultValue,
+  disabled = false,
+  id,
+  maxLength,
+  minLength,
+  onBlur,
+  onChange,
+  placeholder,
+  ref,
+  required = false,
+  rows,
+  theme: {
+    backgroundColor = 'white',
+    color = 'inherit',
+    disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+    disabledColor = 'gray',
+    layoutType = 'rounded',
+    width = 'inherit',
+  } = DEFAULT_THEME,
+  value,
+}: { ref?: React.RefObject<HTMLTextAreaElement | null> } & TextAreaProps) => {
+  if (backgroundColor === 'inherit') {
+    throw new Error('backgroundColor cannot be "inherit"');
+  }
+
+  const [localValue, setLocalValue] = useState(value);
+  const [prevPropValue, setPrevPropValue] = useState(value);
+
+  if (prevPropValue !== value) {
+    setPrevPropValue(value);
+    if (value !== undefined) {
+      setLocalValue(value);
     }
+  }
 
-    const [localValue, setLocalValue] = useState(value);
+  const debouncedOnChange = useMemo(
+    () => (debounceWait && onChange ? debounce(onChange, debounceWait) : onChange),
+    [onChange, debounceWait],
+  );
 
-    useEffect(() => {
-      if (value !== undefined) {
-        setLocalValue(value);
-      }
-    }, [value]);
+  function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    setLocalValue(e.target.value);
+    debouncedOnChange?.(e);
+  }
 
-    const debouncedOnChange = useMemo(
-      () => (debounceWait && onChange ? debounce(onChange, debounceWait) : onChange),
-      [onChange, debounceWait],
-    );
-
-    function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
-      setLocalValue(e.target.value);
-      debouncedOnChange?.(e);
-    }
-
-    return (
-      <Container
-        ref={ref}
-        id={id}
-        placeholder={placeholder}
-        layoutType={layoutType}
-        color={color}
-        backgroundColor={backgroundColor}
-        disabledColor={disabledColor}
-        disabledBackgroundColor={disabledBackgroundColor}
-        width={width}
-        value={localValue}
-        defaultValue={defaultValue}
-        onChange={handleChange}
-        onBlur={onBlur}
-        minLength={minLength}
-        maxLength={maxLength}
-        required={required}
-        disabled={disabled}
-        aria-multiline='true'
-        rows={rows}
-      />
-    );
-  },
-);
+  return (
+    <Container
+      aria-multiline='true'
+      backgroundColor={backgroundColor}
+      color={color}
+      defaultValue={defaultValue}
+      disabled={disabled}
+      disabledBackgroundColor={disabledBackgroundColor}
+      disabledColor={disabledColor}
+      id={id}
+      layoutType={layoutType}
+      maxLength={maxLength}
+      minLength={minLength}
+      onBlur={onBlur}
+      onChange={handleChange}
+      placeholder={placeholder}
+      ref={ref}
+      required={required}
+      rows={rows}
+      value={localValue}
+      width={width}
+    />
+  );
+};
 TextArea.displayName = 'textarea';
 
 export { TextArea, type TextAreaProps };

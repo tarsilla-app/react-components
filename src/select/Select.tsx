@@ -1,6 +1,5 @@
-import { FocusEventHandler, forwardRef, useEffect, useMemo, useState } from 'react';
-
 import debounce from 'debounce';
+import { FocusEventHandler, useMemo, useState } from 'react';
 import { FaAngleDown, FaAngleUp, FaXmark } from 'react-icons/fa6';
 import ReactSelect, {
   ActionMeta,
@@ -8,30 +7,79 @@ import ReactSelect, {
   CoercedMenuPlacement,
   components,
   DropdownIndicatorProps,
+  GroupBase,
   MenuPlacement,
-  MultiValueRemoveProps,
   OnChangeValue,
   SelectInstance,
 } from 'react-select';
 
-export type SingleOption = {
-  label: string;
-  value: string;
-  isDisabled?: boolean;
-};
-
-export type GroupOption = {
-  label: string;
-  options: {
-    label: string;
-    value: string;
-    isDisabled?: boolean;
-  }[];
-};
-
-export type Option = SingleOption | GroupOption;
+export type GroupOption = GroupBase<SingleOption>;
 
 export type IsMulti = boolean;
+
+export type Option = GroupOption | SingleOption;
+
+export type SingleOption = {
+  isDisabled?: boolean;
+  label: string;
+  value: string;
+};
+
+type SelectProps<Option> = {
+  debounceWait?: number;
+  defaultValue?: string | string[];
+  disabled?: boolean;
+  id?: string;
+  isMulti?: boolean;
+  isSearchable?: boolean;
+  menuPlacement?: MenuPlacement;
+  noOptionsMessage?: string;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
+  onChange?: (value: string | string[] | undefined, actionMeta: ActionMeta<SingleOption>) => void;
+  options?: Option[];
+  placeholder?: string;
+  required?: boolean;
+  theme?: {
+    backgroundColor?: string;
+    color?: string;
+    disabledBackgroundColor?: string;
+    disabledColor?: string;
+    disabledItemColor?: string;
+    layoutType?: 'line' | 'rounded';
+    selectedItemColor?: string;
+    width?: string;
+  };
+  value?: string | string[];
+};
+
+function ClearIndicator(props: ClearIndicatorProps<SingleOption, IsMulti, GroupOption>) {
+  return (
+    <components.ClearIndicator {...props}>
+      <FaXmark size={16} />
+    </components.ClearIndicator>
+  );
+}
+
+function DropdownIndicator({ selectProps, ...rest }: DropdownIndicatorProps<SingleOption, IsMulti, GroupOption>) {
+  return (
+    <components.DropdownIndicator selectProps={selectProps} {...rest}>
+      {selectProps.menuIsOpen ? <FaAngleUp size={16} /> : <FaAngleDown size={16} />}
+    </components.DropdownIndicator>
+  );
+}
+
+function getOnChangeValue(newValues?: OnChangeValue<SingleOption, IsMulti>): string | string[] | undefined {
+  if (newValues) {
+    if (Array.isArray(newValues)) {
+      //multiple
+      return (newValues as SingleOption[]).map((newValue) => newValue.value);
+    } else {
+      // single
+      return (newValues as SingleOption).value;
+    }
+  }
+  return undefined;
+}
 
 function getValue(options?: Option[], value?: string | string[]): SingleOption | SingleOption[] | undefined {
   if (options && value) {
@@ -63,312 +111,234 @@ function getValue(options?: Option[], value?: string | string[]): SingleOption |
   return undefined;
 }
 
-function getOnChangeValue(newValues?: OnChangeValue<Option, IsMulti>): string | string[] | undefined {
-  if (newValues) {
-    if (Array.isArray(newValues)) {
-      //multiple
-      const result: string[] = [];
-      newValues.forEach((newValue: Option) => {
-        if ('value' in newValue) {
-          result.push(newValue.value.toString());
-        } else if ('options' in newValue) {
-          newValue.options.forEach((option) => {
-            result.push(option.value.toString());
-          });
-        }
-      });
-      return result;
-    } else {
-      // single
-      if ('value' in newValues) {
-        return newValues.value.toString();
-      } else if ('options' in newValues) {
-        return newValues.options[0].value.toString();
-      }
+const DEFAULT_THEME: NonNullable<SelectProps<Option>['theme']> = {};
+
+const Select = ({
+  debounceWait,
+  defaultValue,
+  disabled = false,
+  id,
+  isMulti = false,
+  isSearchable = false,
+  menuPlacement = 'bottom',
+  noOptionsMessage = 'No options',
+  onBlur,
+  onChange,
+  options,
+  placeholder = 'Select',
+  ref,
+  required = false,
+  theme: {
+    backgroundColor = 'white',
+    color = 'inherit',
+    disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+    disabledColor = 'gray',
+    disabledItemColor = 'gray',
+    layoutType = 'rounded',
+    selectedItemColor = 'blue', //TODO maybe add a selected indicator icon? and use inherit too?
+    width = 'inherit',
+  } = DEFAULT_THEME,
+  value,
+}: { ref?: React.RefObject<SelectInstance<SingleOption, IsMulti, GroupOption> | null> } & SelectProps<Option>) => {
+  if (backgroundColor === 'inherit') {
+    throw new Error('backgroundColor cannot be "inherit"');
+  }
+
+  const [menuPlacementInternal, setMenuPlacementInternal] = useState<CoercedMenuPlacement>(
+    menuPlacement === 'auto' ? 'bottom' : menuPlacement,
+  );
+
+  const [localValue, setLocalValue] = useState(value);
+  const [prevPropValue, setPrevPropValue] = useState(value);
+
+  if (prevPropValue !== value) {
+    setPrevPropValue(value);
+    if (value !== undefined) {
+      setLocalValue(value);
     }
   }
-  return undefined;
-}
 
-function DropdownIndicator(props: DropdownIndicatorProps<Option>) {
-  return (
-    <components.DropdownIndicator {...props}>
-      {props.selectProps.menuIsOpen ? <FaAngleUp size={16} /> : <FaAngleDown size={16} />}
-    </components.DropdownIndicator>
-  );
-}
-
-function ClearIndicator(props: ClearIndicatorProps<Option>) {
-  return (
-    <components.ClearIndicator {...props}>
-      <FaXmark size={16} />
-    </components.ClearIndicator>
-  );
-}
-
-function MultiValueRemove(props: MultiValueRemoveProps<Option>) {
-  return (
-    <components.MultiValueRemove {...props}>
-      <FaXmark size={16} />
-    </components.MultiValueRemove>
-  );
-}
-
-type SelectProps<Option> = {
-  id?: string;
-  placeholder?: string;
-  noOptionsMessage?: string;
-  theme?: {
-    layoutType?: 'line' | 'rounded';
-    color?: string;
-    backgroundColor?: string;
-    disabledColor?: string;
-    disabledBackgroundColor?: string;
-    selectedItemColor?: string;
-    disabledItemColor?: string;
-    width?: string;
-  };
-  value?: string | string[];
-  defaultValue?: string | string[];
-  onChange?: (value: string | string[] | undefined, actionMeta: ActionMeta<Option>) => void;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
-  required?: boolean;
-  disabled?: boolean;
-  debounceWait?: number;
-  options?: Option[];
-  isSearchable?: boolean;
-  isMulti?: boolean;
-  menuPlacement?: MenuPlacement;
-};
-
-const Select = forwardRef<SelectInstance<Option>, SelectProps<Option>>(
-  (
-    {
-      id,
-      placeholder = 'Select',
-      noOptionsMessage = 'No options',
-      theme: {
-        layoutType = 'rounded',
-        color = 'inherit',
-        backgroundColor = 'white',
-        disabledColor = 'gray',
-        disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
-        selectedItemColor = 'blue', //TODO maybe add a selected indicator icon? and use inherit too?
-        disabledItemColor = 'gray',
-        width = 'inherit',
-      } = {},
-      value,
-      defaultValue,
-      onChange,
-      onBlur,
-      required = false,
-      disabled = false,
-      debounceWait = undefined,
-      options,
-      isMulti = false,
-      isSearchable = false,
-      menuPlacement = 'bottom',
-    },
-    ref,
-  ) => {
-    if (backgroundColor === 'inherit') {
-      throw new Error('backgroundColor cannot be "inherit"');
+  const debouncedOnChange = useMemo(() => {
+    function appliedOnChange(newValue: OnChangeValue<SingleOption, IsMulti>, actionMeta: ActionMeta<SingleOption>) {
+      onChange?.(getOnChangeValue(newValue), actionMeta);
     }
+    return debounceWait ? debounce(appliedOnChange, debounceWait) : appliedOnChange;
+  }, [onChange, debounceWait]);
 
-    const [menuPlacementInternal, setMenuPlacementInternal] = useState<CoercedMenuPlacement>(
-      menuPlacement === 'auto' ? 'bottom' : menuPlacement,
-    );
+  function handleChange(newValue: OnChangeValue<SingleOption, IsMulti>, actionMeta: ActionMeta<SingleOption>) {
+    setLocalValue(getOnChangeValue(newValue));
+    debouncedOnChange(newValue, actionMeta);
+  }
 
-    const [localValue, setLocalValue] = useState(value);
-
-    useEffect(() => {
-      if (value !== undefined) {
-        setLocalValue(value);
-      }
-    }, [value]);
-
-    const debouncedOnChange = useMemo(() => {
-      function appliedOnChange(newValue: OnChangeValue<Option, IsMulti>, actionMeta: ActionMeta<Option>) {
-        onChange?.(getOnChangeValue(newValue), actionMeta);
-      }
-      return debounceWait ? debounce(appliedOnChange, debounceWait) : appliedOnChange;
-    }, [onChange, debounceWait]);
-
-    function handleChange(newValue: OnChangeValue<Option, IsMulti>, actionMeta: ActionMeta<Option>) {
-      setLocalValue(getOnChangeValue(newValue));
-      debouncedOnChange?.(newValue, actionMeta);
-    }
-
-    console.log(layoutType);
-
-    return (
-      <ReactSelect
-        ref={ref}
-        id={id}
-        placeholder={placeholder}
-        noOptionsMessage={() => noOptionsMessage}
-        components={{ DropdownIndicator, ClearIndicator, MultiValueRemove }}
-        styles={{
-          control: (styles, { menuIsOpen, isDisabled }) => ({
-            ...styles,
-            color: isDisabled ? disabledColor : color,
-            backgroundColor: isDisabled ? disabledBackgroundColor : backgroundColor,
-            borderColor: isDisabled ? disabledColor : color,
-            borderStyle: 'solid',
-            borderTopWidth: layoutType === 'line' ? '0px' : '1px',
-            borderRightWidth: layoutType === 'line' ? '0px' : '1px',
-            borderBottomWidth: '1px',
-            borderLeftWidth: layoutType === 'line' ? '0px' : '1px',
-            borderTopLeftRadius:
-              (!menuIsOpen || menuPlacementInternal === 'bottom') && layoutType === 'rounded' ? '12px' : '0px',
-            borderTopRightRadius:
-              (!menuIsOpen || menuPlacementInternal === 'bottom') && layoutType === 'rounded' ? '12px' : '0px',
-            borderBottomLeftRadius:
-              (!menuIsOpen || menuPlacementInternal === 'top') && layoutType === 'rounded' ? '12px' : '0px',
-            borderBottomRightRadius:
-              (!menuIsOpen || menuPlacementInternal === 'top') && layoutType === 'rounded' ? '12px' : '0px',
-            width: width,
-            boxShadow: 'none',
-            pointerEvents: 'auto',
-            cursor: isDisabled ? 'not-allowed' : 'pointer',
-            ':hover': {
-              ...styles[':hover'],
-              borderColor: isDisabled ? disabledColor : color,
-            },
-            minHeight: '24px',
-            height: '24px',
-          }),
-          valueContainer: (styles) => ({
-            ...styles,
-            height: '22px',
-            padding: '0px 4px 0px 8px',
-            paddingLeft: '8px',
-          }),
-          input: (styles, { isDisabled }) => ({
-            ...styles,
-            height: '22px',
-            padding: '0px',
-            margin: '0px',
-            color: isDisabled ? disabledColor : color,
-          }),
-          placeholder: (styles, { isDisabled }) => ({
-            ...styles,
-            color: isDisabled ? disabledColor : color,
-            fontSize: '16px',
-            fontWeight: '700',
-            margin: '0px',
-          }),
-          singleValue: (styles, { isDisabled }) => ({
-            ...styles,
-            color: isDisabled ? disabledColor : color,
-            fontSize: '16px',
-            fontWeight: '700',
-            margin: '0px',
-          }),
-          menu: (styles, { placement }) => {
-            setTimeout(() => setMenuPlacementInternal(placement), 0);
-            return {
-              ...styles,
-              backgroundColor,
-              borderColor: color,
-              borderStyle: 'solid',
-              borderWidth: '1px',
-              borderTopLeftRadius: placement === 'top' ? '12px' : '0px',
-              borderTopRightRadius: placement === 'top' ? '12px' : '0px',
-              borderBottomLeftRadius: placement === 'top' ? '0px' : '12px',
-              borderBottomRightRadius: placement === 'top' ? '0px' : '12px',
-              maxWidth: width,
-              margin: '0px',
-              padding: '0px',
-              top: '23px',
-            };
-          },
-          menuList: (styles) => ({
-            ...styles,
-            //margin: '0px,
-            padding: '0px',
-          }),
-          groupHeading: (styles) => ({
-            ...styles,
+  return (
+    <ReactSelect<SingleOption, IsMulti, GroupOption>
+      closeMenuOnSelect={!isMulti}
+      components={{ ClearIndicator, DropdownIndicator }}
+      controlShouldRenderValue={!isMulti}
+      defaultValue={getValue(options, defaultValue)}
+      hideSelectedOptions={false}
+      id={id}
+      isClearable={true}
+      isDisabled={disabled}
+      isMulti={isMulti}
+      isSearchable={isSearchable}
+      menuPlacement={menuPlacement}
+      noOptionsMessage={() => noOptionsMessage}
+      onBlur={onBlur}
+      onChange={handleChange}
+      options={options}
+      placeholder={placeholder}
+      ref={ref}
+      required={required}
+      styles={{
+        clearIndicator: (styles) => ({
+          ...styles,
+          color: color,
+          ':hover': {
+            ...styles[':hover'],
             color: color,
-          }),
-          group: (styles) => ({
-            ...styles,
-            borderBottomColor: color,
-            borderBottomStyle: 'solid',
-            borderBottomWidth: '1px',
-            ':last-of-type': {
-              borderBottom: '0px',
-            },
-          }),
-          option: (styles, { isSelected, isDisabled }) => ({
+          },
+          padding: '0px 4px 0px 0px',
+        }),
+        control: (styles, { isDisabled, menuIsOpen }) => ({
+          ...styles,
+          backgroundColor: isDisabled ? disabledBackgroundColor : backgroundColor,
+          borderBottomLeftRadius:
+            (!menuIsOpen || menuPlacementInternal === 'top') && layoutType === 'rounded' ? '12px' : '0px',
+          borderBottomRightRadius:
+            (!menuIsOpen || menuPlacementInternal === 'top') && layoutType === 'rounded' ? '12px' : '0px',
+          borderBottomWidth: '1px',
+          borderColor: isDisabled ? disabledColor : color,
+          borderLeftWidth: layoutType === 'line' ? '0px' : '1px',
+          borderRightWidth: layoutType === 'line' ? '0px' : '1px',
+          borderStyle: 'solid',
+          borderTopLeftRadius:
+            (!menuIsOpen || menuPlacementInternal === 'bottom') && layoutType === 'rounded' ? '12px' : '0px',
+          borderTopRightRadius:
+            (!menuIsOpen || menuPlacementInternal === 'bottom') && layoutType === 'rounded' ? '12px' : '0px',
+          borderTopWidth: layoutType === 'line' ? '0px' : '1px',
+          boxShadow: 'none',
+          color: isDisabled ? disabledColor : color,
+          cursor: isDisabled ? 'not-allowed' : 'pointer',
+          height: '24px',
+          ':hover': {
+            ...styles[':hover'],
+            borderColor: isDisabled ? disabledColor : color,
+          },
+          minHeight: '24px',
+          pointerEvents: 'auto',
+          width: width,
+        }),
+        dropdownIndicator: (styles, { isDisabled }) => ({
+          ...styles,
+          color: isDisabled ? disabledColor : color,
+          ':hover': {
+            ...styles[':hover'],
+            color: isDisabled ? disabledColor : color,
+          },
+          padding: '2px 8px 0px 0px',
+          paddingRight: '8px',
+        }),
+        group: (styles) => ({
+          ...styles,
+          borderBottomColor: color,
+          borderBottomStyle: 'solid',
+          borderBottomWidth: '1px',
+          ':last-of-type': {
+            borderBottom: '0px',
+          },
+        }),
+        groupHeading: (styles) => ({
+          ...styles,
+          color: color,
+        }),
+        indicatorsContainer: (styles) => ({
+          ...styles,
+          height: '22px',
+        }),
+        indicatorSeparator: (styles) => ({
+          ...styles,
+          display: 'none',
+        }),
+        input: (styles, { isDisabled }) => ({
+          ...styles,
+          color: isDisabled ? disabledColor : color,
+          height: '22px',
+          margin: '0px',
+          padding: '0px',
+        }),
+        menu: (styles, { placement }) => {
+          setTimeout(() => {
+            setMenuPlacementInternal(placement);
+          }, 0);
+          return {
             ...styles,
             backgroundColor,
-            color: isSelected ? selectedItemColor : isDisabled ? disabledItemColor : color,
-            cursor: isDisabled ? 'not-allowed' : 'pointer',
-            ':active': {
-              ...styles[':active'],
-              backgroundColor,
-            },
-            fontSize: '16px',
-            lineHeight: '20px',
-            fontWeight: '700',
-            margin: '0px 6px',
-            padding: '2px 6px',
-            borderBottomColor: color,
-            borderBottomStyle: 'solid',
-            borderBottomWidth: '1px',
-            ':last-of-type': {
-              borderBottom: '0px',
-            },
-            width: 'calc(100% - 12px)',
-          }),
-          indicatorSeparator: (styles) => ({
-            ...styles,
-            display: 'none',
-          }),
-          indicatorsContainer: (styles) => ({
-            ...styles,
-            height: '22px',
-          }),
-          dropdownIndicator: (styles, { isDisabled }) => ({
-            ...styles,
-            color: isDisabled ? disabledColor : color,
-            padding: '2px 8px 0px 0px',
-            paddingRight: '8px',
-            ':hover': {
-              ...styles[':hover'],
-              color: isDisabled ? disabledColor : color,
-            },
-          }),
-          clearIndicator: (styles) => ({
-            ...styles,
-            color: color,
-            padding: '0px 4px 0px 0px',
-            ':hover': {
-              ...styles[':hover'],
-              color: color,
-            },
-          }),
-        }}
-        value={getValue(options, localValue)}
-        defaultValue={getValue(options, defaultValue)}
-        onChange={handleChange}
-        onBlur={onBlur}
-        required={required}
-        isDisabled={disabled}
-        options={options}
-        isMulti={isMulti}
-        isSearchable={isSearchable}
-        controlShouldRenderValue={!isMulti}
-        hideSelectedOptions={false}
-        closeMenuOnSelect={!isMulti}
-        menuPlacement={menuPlacement}
-        isClearable={true}
-      />
-    );
-  },
-);
+            borderBottomLeftRadius: placement === 'top' ? '0px' : '12px',
+            borderBottomRightRadius: placement === 'top' ? '0px' : '12px',
+            borderColor: color,
+            borderStyle: 'solid',
+            borderTopLeftRadius: placement === 'top' ? '12px' : '0px',
+            borderTopRightRadius: placement === 'top' ? '12px' : '0px',
+            borderWidth: '1px',
+            margin: '0px',
+            maxWidth: width,
+            padding: '0px',
+            top: '23px',
+          };
+        },
+        menuList: (styles) => ({
+          ...styles,
+          //margin: '0px,
+          padding: '0px',
+        }),
+        option: (styles, { isDisabled, isSelected }) => ({
+          ...styles,
+          ':active': {
+            ...styles[':active'],
+            backgroundColor,
+          },
+          backgroundColor,
+          borderBottomColor: color,
+          borderBottomStyle: 'solid',
+          borderBottomWidth: '1px',
+          color: isSelected ? selectedItemColor : isDisabled ? disabledItemColor : color,
+          cursor: isDisabled ? 'not-allowed' : 'pointer',
+          fontSize: '16px',
+          fontWeight: '700',
+          ':last-of-type': {
+            borderBottom: '0px',
+          },
+          lineHeight: '20px',
+          margin: '0px 6px',
+          padding: '2px 6px',
+          width: 'calc(100% - 12px)',
+        }),
+        placeholder: (styles, { isDisabled }) => ({
+          ...styles,
+          color: isDisabled ? disabledColor : color,
+          fontSize: '16px',
+          fontWeight: '700',
+          margin: '0px',
+        }),
+        singleValue: (styles, { isDisabled }) => ({
+          ...styles,
+          color: isDisabled ? disabledColor : color,
+          fontSize: '16px',
+          fontWeight: '700',
+          margin: '0px',
+        }),
+        valueContainer: (styles) => ({
+          ...styles,
+          height: '22px',
+          padding: '0px 4px 0px 8px',
+          paddingLeft: '8px',
+        }),
+      }}
+      value={getValue(options, localValue)}
+    />
+  );
+};
 Select.displayName = 'select';
 
 export { Select, type SelectProps };

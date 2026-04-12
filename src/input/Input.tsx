@@ -1,24 +1,23 @@
-import { ChangeEvent, ChangeEventHandler, FocusEventHandler, forwardRef, useEffect, useMemo, useState } from 'react';
-
-import styled from '@emotion/styled';
 import debounce from 'debounce';
+import styled from '@emotion/styled';
+import { ChangeEvent, ChangeEventHandler, FocusEventHandler, useMemo, useState } from 'react';
 
 type ContainerProps = {
-  layoutType: string;
-  color: string;
   backgroundColor: string;
-  disabledColor: string;
+  color: string;
   disabledBackgroundColor: string;
+  disabledColor: string;
+  layoutType: string;
   width: string;
 };
 
 const Container = styled.input<ContainerProps>`
-  color: ${({ color }) => `${color}`};
-  background-color: ${({ backgroundColor }) => `${backgroundColor}`};
+  color: ${({ color }) => color};
+  background-color: ${({ backgroundColor }) => backgroundColor};
   font-size: 16px;
   line-height: 21px;
   font-weight: 700;
-  width: ${({ width }) => `${width}`};
+  width: ${({ width }) => width};
   height: 24px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -26,12 +25,12 @@ const Container = styled.input<ContainerProps>`
 
   border-color: ${({ color }) => color};
   border-style: solid;
-  border-radius: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '12px'}`};
+  border-radius: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '12px')};
 
-  border-top-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
-  border-right-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
+  border-top-width: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '1px')};
+  border-right-width: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '1px')};
   border-bottom-width: 1px;
-  border-left-width: ${({ layoutType }) => `${layoutType === 'line' ? '0px' : '1px'}`};
+  border-left-width: ${({ layoutType }) => (layoutType === 'line' ? '0px' : '1px')};
 
   padding-left: 8px;
   padding-right: 8px;
@@ -40,10 +39,10 @@ const Container = styled.input<ContainerProps>`
 
   ::placeholder,
   ::-webkit-input-placeholder {
-    color: ${({ color }) => `${color}`};
+    color: ${({ color }) => color};
   }
   :-ms-input-placeholder {
-    color: ${({ color }) => `${color}`};
+    color: ${({ color }) => color};
   }
 
   :focus,
@@ -53,124 +52,124 @@ const Container = styled.input<ContainerProps>`
 
   :disabled {
     cursor: not-allowed;
-    color: ${({ disabledColor }) => `${disabledColor}`};
-    background-color: ${({ disabledBackgroundColor }) => `${disabledBackgroundColor}`};
+    color: ${({ disabledColor }) => disabledColor};
+    background-color: ${({ disabledBackgroundColor }) => disabledBackgroundColor};
     border-color: ${({ disabledColor }) => disabledColor};
 
     ::placeholder,
     ::-webkit-input-placeholder {
-      color: ${({ disabledColor }) => `${disabledColor}`};
+      color: ${({ disabledColor }) => disabledColor};
     }
     :-ms-input-placeholder {
-      color: ${({ disabledColor }) => `${disabledColor}`};
+      color: ${({ disabledColor }) => disabledColor};
     }
   }
 `;
 
 type InputProps = {
-  id?: string;
-  placeholder?: string;
-  type?: 'text' | 'number' | 'email' | 'password' | 'tel';
-  theme?: {
-    layoutType?: 'line' | 'rounded';
-    color?: string;
-    backgroundColor?: string;
-    disabledColor?: string;
-    disabledBackgroundColor?: string;
-    width?: string;
-  };
-  value?: string;
+  debounceWait?: number;
   defaultValue?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
-  min?: number;
+  disabled?: boolean;
+  id?: string;
   max?: number;
   maxLength?: number;
+  min?: number;
   minLength?: number;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   pattern?: string;
+  placeholder?: string;
   required?: boolean;
-  disabled?: boolean;
-  debounceWait?: number;
+  theme?: {
+    backgroundColor?: string;
+    color?: string;
+    disabledBackgroundColor?: string;
+    disabledColor?: string;
+    layoutType?: 'line' | 'rounded';
+    width?: string;
+  };
+  type?: 'email' | 'number' | 'password' | 'tel' | 'text';
+  value?: string;
 };
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      id,
-      placeholder = undefined,
-      type = 'text',
-      theme: {
-        layoutType = 'rounded',
-        color = 'inherit',
-        backgroundColor = 'white',
-        disabledColor = 'gray',
-        disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
-        width = 'inherit',
-      } = {},
-      value,
-      defaultValue,
-      onChange,
-      onBlur,
-      min = undefined,
-      max = undefined,
-      minLength = undefined,
-      maxLength = undefined,
-      pattern = undefined,
-      required = false,
-      disabled = false,
-      debounceWait = undefined,
-    },
-    ref,
-  ) => {
-    if (backgroundColor === 'inherit') {
-      throw new Error('backgroundColor cannot be "inherit"');
+const DEFAULT_THEME: NonNullable<InputProps['theme']> = {};
+
+const Input = ({
+  debounceWait,
+  defaultValue,
+  disabled = false,
+  id,
+  max,
+  maxLength,
+  min,
+  minLength,
+  onBlur,
+  onChange,
+  pattern,
+  placeholder,
+  ref,
+  required = false,
+  theme: {
+    backgroundColor = 'white',
+    color = 'inherit',
+    disabledBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+    disabledColor = 'gray',
+    layoutType = 'rounded',
+    width = 'inherit',
+  } = DEFAULT_THEME,
+  type = 'text',
+  value,
+}: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => {
+  if (backgroundColor === 'inherit') {
+    throw new Error('backgroundColor cannot be "inherit"');
+  }
+
+  const [localValue, setLocalValue] = useState(value);
+  const [prevPropValue, setPrevPropValue] = useState(value);
+
+  if (prevPropValue !== value) {
+    setPrevPropValue(value);
+    if (value !== undefined) {
+      setLocalValue(value);
     }
+  }
 
-    const [localValue, setLocalValue] = useState(value);
+  const debouncedOnChange = useMemo(
+    () => (debounceWait && onChange ? debounce(onChange, debounceWait) : onChange),
+    [onChange, debounceWait],
+  );
 
-    useEffect(() => {
-      if (value !== undefined) {
-        setLocalValue(value);
-      }
-    }, [value]);
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setLocalValue(e.target.value);
+    debouncedOnChange?.(e);
+  }
 
-    const debouncedOnChange = useMemo(
-      () => (debounceWait && onChange ? debounce(onChange, debounceWait) : onChange),
-      [onChange, debounceWait],
-    );
-
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-      setLocalValue(e.target.value);
-      debouncedOnChange?.(e);
-    }
-
-    return (
-      <Container
-        ref={ref}
-        id={id}
-        placeholder={placeholder}
-        type={type}
-        layoutType={layoutType}
-        color={color}
-        backgroundColor={backgroundColor}
-        disabledColor={disabledColor}
-        disabledBackgroundColor={disabledBackgroundColor}
-        width={width}
-        value={localValue}
-        defaultValue={defaultValue}
-        onChange={handleChange}
-        onBlur={onBlur}
-        min={min}
-        max={max}
-        minLength={minLength}
-        maxLength={maxLength}
-        pattern={pattern}
-        required={required}
-        disabled={disabled}
-      />
-    );
-  },
-);
+  return (
+    <Container
+      backgroundColor={backgroundColor}
+      color={color}
+      defaultValue={defaultValue}
+      disabled={disabled}
+      disabledBackgroundColor={disabledBackgroundColor}
+      disabledColor={disabledColor}
+      id={id}
+      layoutType={layoutType}
+      max={max}
+      maxLength={maxLength}
+      min={min}
+      minLength={minLength}
+      onBlur={onBlur}
+      onChange={handleChange}
+      pattern={pattern}
+      placeholder={placeholder}
+      ref={ref}
+      required={required}
+      type={type}
+      value={localValue}
+      width={width}
+    />
+  );
+};
 Input.displayName = 'input';
 
 export { Input, type InputProps };

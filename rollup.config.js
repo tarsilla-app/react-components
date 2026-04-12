@@ -6,7 +6,7 @@ export default [
   ...rollupReactConfig({ folder: 'label' }),
   ...rollupReactConfig({ folder: 'loading' }),
   ...rollupReactConfig({ folder: 'select' }),
-  ...rollupReactConfig({ folder: 'tab', external: ['react-tabs/style/react-tabs.css'] }),
+  ...rollupReactConfig({ external: ['react-tabs/style/react-tabs.css'], folder: 'tab' }),
   ...rollupReactConfig({ folder: 'textarea' }),
-  ...rollupReactConfig({ folder: 'toast', external: ['react-toastify/dist/ReactToastify.css'] }),
+  ...rollupReactConfig({ external: ['react-toastify/dist/ReactToastify.css'], folder: 'toast' }),
 ];

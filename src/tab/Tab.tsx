@@ -1,8 +1,6 @@
 import 'react-tabs/style/react-tabs.css';
-
-import { JSX, useState } from 'react';
-
 import { css } from '@emotion/css';
+import { JSX, useState } from 'react';
 import { Tab as ReactTab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 const tabList = css`
@@ -95,51 +93,54 @@ const selectedTabPanel = css`
 `;
 
 type TabProps = {
-  disabledContent?: () => JSX.Element;
   defaultIndex?: number;
+  disabledContent?: () => JSX.Element;
   jumpToFirstEnabled?: boolean;
   tabs: {
-    header: (props: { disabled?: boolean }) => JSX.Element;
     content: (props: { disabled?: boolean }) => JSX.Element;
     disabled?: boolean;
+    header: (props: { disabled?: boolean }) => JSX.Element;
+    key?: string;
   }[];
   theme?: {
-    tabColor?: string;
-    tabBackgroundColor?: string;
+    disabledPanelBackgroundColor?: string;
+    disabledPanelColor?: string;
     disabledTabColor?: string;
     disabledTagBackgroundColor?: string;
-    selectedTabColor?: string;
-    selectedTabBackgroundColor?: string;
+    height?: string;
+    panelBackgroundColor?: string;
 
     panelColor?: string;
-    panelBackgroundColor?: string;
-    disabledPanelColor?: string;
-    disabledPanelBackgroundColor?: string;
+    selectedTabBackgroundColor?: string;
+    selectedTabColor?: string;
+    tabBackgroundColor?: string;
 
+    tabColor?: string;
     width?: string;
-    height?: string;
   };
 };
 
+const DEFAULT_THEME: NonNullable<TabProps['theme']> = {};
+
 function Tab({
-  disabledContent: DisabledContent,
   defaultIndex,
+  disabledContent: DisabledContent,
   jumpToFirstEnabled,
   tabs,
   theme: {
-    tabColor = 'inherit',
-    tabBackgroundColor = 'white',
+    disabledPanelBackgroundColor = 'rgba(128, 128, 128, 0.2)',
+    disabledPanelColor = 'gray',
     disabledTabColor = 'gray',
     disabledTagBackgroundColor = 'rgba(128, 128, 128, 0.2)',
-    selectedTabColor = 'inherit',
-    selectedTabBackgroundColor = 'white',
-    panelColor = 'inherit',
-    panelBackgroundColor = 'white',
-    disabledPanelColor = 'gray',
-    disabledPanelBackgroundColor = 'rgba(128, 128, 128, 0.2)',
-    width = 'inherit',
     height = 'inherit',
-  } = {},
+    panelBackgroundColor = 'white',
+    panelColor = 'inherit',
+    selectedTabBackgroundColor = 'white',
+    selectedTabColor = 'inherit',
+    tabBackgroundColor = 'white',
+    tabColor = 'inherit',
+    width = 'inherit',
+  } = DEFAULT_THEME,
 }: TabProps): JSX.Element {
   if (jumpToFirstEnabled) {
     const firstEnabled = tabs.findIndex((tab) => !tab.disabled);
@@ -150,10 +151,10 @@ function Tab({
 
   return (
     <Tabs
-      style={{ width: width, height: height }}
-      forceRenderTabPanel={true}
       defaultIndex={defaultIndex}
+      forceRenderTabPanel={true}
       onSelect={setSelectedTabIndex}
+      style={{ height: height, width: width }}
     >
       <TabList
         className={tabList}
@@ -163,20 +164,20 @@ function Tab({
       >
         {tabs.map((tab, index) => (
           <ReactTab
-            key={index}
             className={tabCss}
-            selectedClassName={selectedTab}
-            disabledClassName={selectedTabIndex === index ? disabledTabSelected : disabledTab}
             disabled={tab.disabled}
+            disabledClassName={selectedTabIndex === index ? disabledTabSelected : disabledTab}
+            key={tab.key}
+            selectedClassName={selectedTab}
             style={{
-              ['--unselected-color' as never]: tabColor,
-              ['--unselected-background-color' as never]: tabBackgroundColor,
-              ['--selected-color' as never]: selectedTabColor,
-              ['--selected-background-color' as never]: selectedTabBackgroundColor,
-              ['--disabled-color' as never]: disabledTabColor,
               ['--disabled-background-color' as never]: disabledTagBackgroundColor,
               ['--disabled-border-workaround' as never]:
                 selectedTabIndex === index && tab.disabled ? 'white' : undefined,
+              ['--disabled-color' as never]: disabledTabColor,
+              ['--selected-background-color' as never]: selectedTabBackgroundColor,
+              ['--selected-color' as never]: selectedTabColor,
+              ['--unselected-background-color' as never]: tabBackgroundColor,
+              ['--unselected-color' as never]: tabColor,
             }}
           >
             <tab.header disabled={tab.disabled} />
@@ -184,18 +185,18 @@ function Tab({
         ))}
       </TabList>
 
-      {tabs.map((tab, index) => (
+      {tabs.map((tab) => (
         <TabPanel
-          key={index}
           className={tabPanel}
-          selectedClassName={selectedTabPanel}
           disabled={tab.disabled}
+          forceRender={true}
+          key={tab.key}
+          selectedClassName={selectedTabPanel}
           style={{
-            ['--color' as never]: tab.disabled ? disabledPanelColor : panelColor,
             ['--background-color' as never]: tab.disabled ? disabledPanelBackgroundColor : panelBackgroundColor,
             ['--border-color' as never]: selectedTabColor,
+            ['--color' as never]: tab.disabled ? disabledPanelColor : panelColor,
           }}
-          forceRender={true}
         >
           {tab.disabled && DisabledContent ? <DisabledContent /> : <tab.content disabled={tab.disabled} />}
         </TabPanel>

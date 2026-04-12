@@ -1,81 +1,80 @@
-import type { Decorator, Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 
 import { Label, LabelProps } from '../src/label/index.js';
 
 type StyleDecoratorProps = {
-  color?: string;
   backgroundColor?: string;
+  color?: string;
 };
 
 const StyleDecorator: Decorator<LabelProps> = (Story, { args }) => {
-  const { color, backgroundColor, ...rest } = args as unknown as StyleDecoratorProps;
+  const { backgroundColor, color, ...rest } = args as unknown as StyleDecoratorProps;
   return (
     <Story
       args={{
         ...rest,
-        theme: { color, backgroundColor },
+        theme: { backgroundColor, color },
       }}
     />
   );
 };
 
-const meta: Meta<typeof Label> = {
-  title: 'Label',
-  component: Label,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
+const meta: Meta<LabelProps & StyleDecoratorProps> = {
+  args: {},
   argTypes: {
+    backgroundColor: {
+      control: 'color',
+      description: 'set background color',
+      table: {
+        defaultValue: { summary: 'white' },
+        type: { summary: 'text' },
+      },
+    },
+    color: {
+      control: 'color',
+      description: 'set color',
+      table: {
+        defaultValue: { summary: 'inherit' },
+        type: { summary: 'text' },
+      },
+    },
     id: {
       control: 'text',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'undefined' },
-      },
       description: 'id',
+      table: {
+        defaultValue: { summary: 'undefined' },
+        type: { summary: 'text' },
+      },
     },
     theme: {
       control: 'object',
+      description: 'theme',
       table: {
         disable: true,
         type: { summary: 'object' },
       },
-      description: 'theme',
-    },
-    // @ts-ignore
-    color: {
-      control: 'color',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'inherit' },
-      },
-      description: 'set color',
-    },
-    backgroundColor: {
-      control: 'color',
-      table: {
-        type: { summary: 'text' },
-        defaultValue: { summary: 'white' },
-      },
-      description: 'set background color',
     },
     value: {
       control: false,
+      description: 'value',
       disable: true,
       table: {
-        type: { summary: 'text' },
         defaultValue: { summary: 'undefined' },
+        type: { summary: 'text' },
       },
-      description: 'value',
     },
   },
-  args: {},
+  component: Label,
   decorators: [StyleDecorator],
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  title: 'Label',
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<LabelProps & StyleDecoratorProps>;
 
 export const Default: Story = {
   args: {
@@ -86,10 +85,9 @@ export const Default: Story = {
 
 export const Styled: Story = {
   args: {
-    id: 'id-123',
-    // @ts-ignore
-    color: 'blue',
     backgroundColor: 'yellow',
+    color: 'blue',
+    id: 'id-123',
     value: 'Tarsilla',
   },
 };
