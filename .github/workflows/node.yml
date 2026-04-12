@@ -18,7 +18,10 @@ jobs:
           },
           "codeql": true
         }
-      test: true
+      test: |
+        {
+          "test": "npm run test:coverage"
+        }
       publish: |
         {
           "npm": true
