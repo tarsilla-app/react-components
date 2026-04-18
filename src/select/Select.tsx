@@ -162,7 +162,7 @@ const Select = ({
     function appliedOnChange(newValue: OnChangeValue<SingleOption, IsMulti>, actionMeta: ActionMeta<SingleOption>) {
       onChange?.(getOnChangeValue(newValue), actionMeta);
     }
-    return debounceWait ? debounce(appliedOnChange, debounceWait) : appliedOnChange;
+    return debounceWait != null && debounceWait > 0 ? debounce(appliedOnChange, debounceWait) : appliedOnChange;
   }, [onChange, debounceWait]);
 
   function handleChange(newValue: OnChangeValue<SingleOption, IsMulti>, actionMeta: ActionMeta<SingleOption>) {

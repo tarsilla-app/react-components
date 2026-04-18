@@ -129,7 +129,7 @@ const TextArea = ({
   }
 
   const debouncedOnChange = useMemo(
-    () => (debounceWait && onChange ? debounce(onChange, debounceWait) : onChange),
+    () => (debounceWait != null && debounceWait > 0 && onChange ? debounce(onChange, debounceWait) : onChange),
     [onChange, debounceWait],
   );
 

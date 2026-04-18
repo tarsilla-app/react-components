@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
@@ -91,8 +91,26 @@ describe('Input', () => {
   });
 
   test('fires debounced onChange when debounceWait is set', () => {
+    vi.useFakeTimers();
     const onChange = vi.fn();
     render(<Input debounceWait={100} onChange={onChange} value='' />);
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    const input = screen.getByRole('textbox');
+
+    fireEvent.change(input, { target: { value: 'a' } });
+    expect(onChange).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(100);
+    expect(onChange).toHaveBeenCalledTimes(1);
+
+    vi.useRealTimers();
+  });
+
+  test('calls onChange immediately when debounceWait is 0', () => {
+    const onChange = vi.fn();
+    render(<Input debounceWait={0} onChange={onChange} value='' />);
+    const input = screen.getByRole('textbox');
+
+    fireEvent.change(input, { target: { value: 'a' } });
+    expect(onChange).toHaveBeenCalledTimes(1);
   });
 });

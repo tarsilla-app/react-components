@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 
 import { GroupOption, Select, type SingleOption } from '../src/select/Select.js';
 
@@ -148,11 +148,39 @@ describe('Select', () => {
     expect(screen.getByText('Select')).toBeInTheDocument();
   });
 
-  test('renders with debounceWait and calls onChange', async () => {
-    render(<Select debounceWait={100} options={options} />);
-    await userEvent.click(screen.getByText('Select'));
-    await userEvent.click(screen.getByText('Option A'));
-    expect(screen.getByText('Option A')).toBeInTheDocument();
+  describe('debounce', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    test('does not call onChange immediately and fires after debounceWait', () => {
+      vi.useFakeTimers();
+      const onChange = vi.fn();
+      render(<Select debounceWait={100} onChange={onChange} options={options} />);
+
+      act(() => {
+        fireEvent.mouseDown(screen.getByText('Select'));
+      });
+      act(() => {
+        fireEvent.click(screen.getByText('Option A'));
+      });
+      expect(onChange).not.toHaveBeenCalled();
+
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith('a', expect.any(Object));
+    });
+
+    test('calls onChange immediately when debounceWait is 0', async () => {
+      const onChange = vi.fn();
+      render(<Select debounceWait={0} onChange={onChange} options={options} />);
+      await userEvent.click(screen.getByText('Select'));
+      await userEvent.click(screen.getByText('Option A'));
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith('a', expect.any(Object));
+    });
   });
 
   test('renders with layoutType line and opens menu', async () => {
